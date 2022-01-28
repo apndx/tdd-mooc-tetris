@@ -22,7 +22,22 @@ export class Board {
     this.board = boardArray.join('');
     return this.board;
   }
-    
+
+  tick() {
+    var boardArray = Array.from(this.board);
+    var indices = [];
+    var block = 'X';
+    var idx = boardArray.indexOf(block);
+    while (idx != -1) {
+      indices.push(idx);
+      idx = boardArray.indexOf(block, idx + 1);
+    }
+    for (var i=0; i<indices.length; i++ ) {
+      boardArray[indices[i]] = '.';
+      boardArray[indices[i]+this.width+1] = 'X';
+    }
+    this.board = boardArray.join('');
+  }
 }
 
 export const makeBoard = (width, height) => {
