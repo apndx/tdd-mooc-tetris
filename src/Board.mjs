@@ -1,4 +1,4 @@
-import { Block } from './Block.mjs'
+import { makeBoardArray } from './utils.mjs';
 
 export class Board {
   width;
@@ -9,54 +9,47 @@ export class Board {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.board = makeBoard(this.width, this.height);
+    this.board = makeBoardArray(this.width, this.height);
     this.blockDropping = false;
   }
 
   toString() {
-    return this.board;
+    var boardString = '';
+    for (var i=0; i<this.height; i++ ) {
+        var row = this.board[i].join('');
+        boardString += row + '\n';
+      }  
+    return boardString;
   }
 
-  drop(block) {
+ drop(block) {
     if (!this.blockDropping) {
       this.blockDropping = true;
       const placement = Math.ceil(this.width / 2)-1;
-      var boardArray = Array.from(this.board);
-      boardArray[placement] = block.color;
-      this.board = boardArray.join('');
-      return this.board;
+      this.board[0][placement] = block.color;
     } else {
       throw 'already falling'
     }
-
   }
 
   tick() {
-    var boardArray = Array.from(this.board);
-    var indices = [];
+    var rowIndices = [];
+    var columnIndices = [];
     var block = 'X';
-    var idx = boardArray.indexOf(block);
-    while (idx != -1) {
-      indices.push(idx);
-      idx = boardArray.indexOf(block, idx + 1);
+    for (var i=0; i<this.height; i++ )  {
+      var row = this.board[i];
+      var idx = row.indexOf(block);
+      if (idx != -1) {
+        rowIndices.push(i);
+        columnIndices.push(idx);
+      }
     }
-    for (var i=0; i<indices.length; i++ ) {
-      boardArray[indices[i]] = '.';
-      boardArray[indices[i]+this.width+1] = 'X';
+    for (var i=0; i<rowIndices.length; i++ ) {
+      var rowIndex = rowIndices[i];
+      var columnIndex = columnIndices[i];
+      this.board[rowIndex][columnIndex] = '.';
+      this.board[rowIndex+1][columnIndex] = 'X';
     }
-    this.board = boardArray.join('');
   }
-}
 
-export const makeBoard = (width, height) => {
-  var row = '';
-  var board = '';
-  for (var i = 0; i < width; i++) {
-    row += '.';
-  }
-  row += '\n';
-  for (var i = 0; i < height; i++) {
-    board += row;
-  }
-  return board;
-};
+}
