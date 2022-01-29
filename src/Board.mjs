@@ -4,11 +4,13 @@ export class Board {
   width;
   height;
   board;
+  blockDropping;
 
   constructor(width, height) {
     this.width = width;
     this.height = height;
     this.board = makeBoard(this.width, this.height);
+    this.blockDropping = false;
   }
 
   toString() {
@@ -16,11 +18,17 @@ export class Board {
   }
 
   drop(block) {
-    const placement = Math.ceil(this.width / 2)-1;
-    var boardArray = Array.from(this.board);
-    boardArray[placement] = block.color;
-    this.board = boardArray.join('');
-    return this.board;
+    if (!this.blockDropping) {
+      this.blockDropping = true;
+      const placement = Math.ceil(this.width / 2)-1;
+      var boardArray = Array.from(this.board);
+      boardArray[placement] = block.color;
+      this.board = boardArray.join('');
+      return this.board;
+    } else {
+      throw 'already falling'
+    }
+
   }
 
   tick() {
