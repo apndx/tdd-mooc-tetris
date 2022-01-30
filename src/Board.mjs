@@ -49,13 +49,19 @@ export class Board {
     for (var i=0; i<rowIndices.length; i++ ) {
       var rowIndex = rowIndices[i];
       var columnIndex = columnIndices[i];
-      if (rowIndex < this.height-1) {
+      if (rowIndex < this.height-1 && this.isThereSpaceBelowTheBlock(rowIndex, columnIndex)) {
         this.board[rowIndex][columnIndex] = '.';
         this.board[rowIndex+1][columnIndex] = this.fallingBlock.color;
       } else {
         this.fallingBlock = null;
       }
     }
+  }
+
+  isThereSpaceBelowTheBlock(rowIdx, colIdx) {
+    const emptySpace = this.board[rowIdx+1][colIdx] === ".";
+    const lastRow = rowIdx === this.height -1;
+    return emptySpace || lastRow;
   }
 
   makeBoardArray = (width, height) => {
