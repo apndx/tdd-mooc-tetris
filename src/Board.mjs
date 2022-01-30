@@ -1,16 +1,14 @@
-import { makeBoardArray } from './utils.mjs';
-
 export class Board {
   width;
   height;
   board;
-  blockDropping;
+  fallingBlock;
 
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.board = makeBoardArray(this.width, this.height);
-    this.blockDropping = false;
+    this.board = this.makeBoardArray(this.width, this.height);
+    this.fallingBlock = null;
   }
 
   toString() {
@@ -22,9 +20,13 @@ export class Board {
     return boardString;
   }
 
+  hasFalling() {
+    return this.fallingBlock ? true : false;
+  }
+
  drop(block) {
-    if (!this.blockDropping) {
-      this.blockDropping = true;
+    if (!this.hasFalling()) {
+      this.fallingBlock = block;
       const placement = Math.ceil(this.width / 2)-1;
       this.board[0][placement] = block.color;
     } else {
@@ -35,10 +37,10 @@ export class Board {
   tick() {
     var rowIndices = [];
     var columnIndices = [];
-    var block = 'X';
+    var blockColor = this.fallingBlock.color;
     for (var i=0; i<this.height; i++ )  {
       var row = this.board[i];
-      var idx = row.indexOf(block);
+      var idx = row.indexOf(blockColor);
       if (idx != -1) {
         rowIndices.push(i);
         columnIndices.push(idx);
@@ -51,5 +53,18 @@ export class Board {
       this.board[rowIndex+1][columnIndex] = 'X';
     }
   }
+
+  makeBoardArray = (width, height) => {
+    var row = [];
+    var board = [];
+    for (var j = 0; j < height; j++) {
+      for (var i = 0; i < width; i++) {
+        row.push('.');
+      }
+      board[j] = row;
+      row = [];
+    }
+    return board;
+  };
 
 }
