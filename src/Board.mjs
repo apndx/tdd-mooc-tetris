@@ -49,8 +49,12 @@ export class Board {
     for (var i=0; i<rowIndices.length; i++ ) {
       var rowIndex = rowIndices[i];
       var columnIndex = columnIndices[i];
-      this.board[rowIndex][columnIndex] = '.';
-      this.board[rowIndex+1][columnIndex] = 'X';
+      if (rowIndex < this.height-1) {
+        this.board[rowIndex][columnIndex] = '.';
+        this.board[rowIndex+1][columnIndex] = this.fallingBlock.color;
+      } else {
+        this.fallingBlock = null;
+      }
     }
   }
 
