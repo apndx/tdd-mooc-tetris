@@ -34,15 +34,23 @@ export class RotatingShape {
   rotateRight() {
     var transposeMatrix = _.zip(...this.shapeMatrix);
     var rotatedRight = transposeMatrix.map(row => row.reverse());
-    this.shapeMatrix = rotatedRight;
-    return this
+    return this.printRotated(rotatedRight)
   }
 
   rotateLeft() {
     var transposeMatrix = _.zip(...this.shapeMatrix);
     var rotatedLeft = transposeMatrix.reverse();
     this.shapeMatrix = rotatedLeft;
-    return this
+    return this.printRotated(rotatedLeft)
+  }
+
+  printRotated(shape) { 
+    var matrixString = '';
+    for (var i=0; i<this.size; i++ ) {
+        var row = shape[i].join('');
+        matrixString += row + '\n';
+      }  
+    return matrixString;
   }
 
   toString() { 
