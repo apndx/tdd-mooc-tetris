@@ -4,11 +4,13 @@ export class RotatingShape {
   shapeAlphabet;
   shapeMatrix;
   size;
+  type;
 
-  constructor(shape) {
+  constructor(shape, type) {
     // expecting square boards
     this.shapeAlphabet= this.getShapeAlphabet(shape);
     this.shapeMatrix = this.initializeShape();
+    this.type = type;
   }
 
   initializeShape() {
@@ -41,7 +43,13 @@ export class RotatingShape {
 
   rotateLeft() {
     var transposeMatrix = _.zip(...this.shapeMatrix);
-    var rotatedLeft = transposeMatrix.reverse();
+    var rotatedLeft;
+    var rotatedString;
+    if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+      rotatedLeft = transposeMatrix.map(row => row.reverse());
+    } else {
+      rotatedLeft = transposeMatrix.reverse();
+    }
     var rotatedString = this.printRotated(rotatedLeft);
     var shape = new RotatingShape(rotatedString);
     return shape;
