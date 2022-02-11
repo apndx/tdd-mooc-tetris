@@ -5,12 +5,14 @@ export class RotatingShape {
   shapeMatrix;
   size;
   type;
+  orientation;
 
-  constructor(shape, type) {
+  constructor(shape, type, orientation) {
     // expecting square boards
     this.shapeAlphabet= this.getShapeAlphabet(shape);
     this.shapeMatrix = this.initializeShape();
     this.type = type;
+    this.orientation = orientation;
   }
 
   initializeShape() {
@@ -34,25 +36,51 @@ export class RotatingShape {
   }
 
   rotateRight() {
+    if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+      return this.rotateRightI()
+    } else {
+      var transposeMatrix = _.zip(...this.shapeMatrix);
+      var rotatedRight = transposeMatrix.map(row => row.reverse());
+      var rotatedString = this.printRotated(rotatedRight);
+      return new RotatingShape(rotatedString);
+    }
+  }
+
+  rotateRightI() {
     var transposeMatrix = _.zip(...this.shapeMatrix);
-    var rotatedRight = transposeMatrix.map(row => row.reverse());
-    var rotatedString = this.printRotated(rotatedRight);
-    var shape = new RotatingShape(rotatedString);
-    return shape;
+    if (this.orientation === 'up') {
+      var rotatedRight = transposeMatrix.reverse();
+      var rotatedString = this.printRotated(rotatedRight);
+      return new RotatingShape(rotatedString, this.type, 'left');
+    } else {
+      var rotatedRight = transposeMatrix.map(row => row.reverse());
+      var rotatedString = this.printRotated(rotatedRight);
+      return new RotatingShape(rotatedString, this.type, 'up');
+    }
   }
 
   rotateLeft() {
-    var transposeMatrix = _.zip(...this.shapeMatrix);
-    var rotatedLeft;
-    var rotatedString;
     if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
-      rotatedLeft = transposeMatrix.map(row => row.reverse());
+      return this.rotateLeftI()
     } else {
-      rotatedLeft = transposeMatrix.reverse();
+      var transposeMatrix = _.zip(...this.shapeMatrix);
+      var rotatedLeft = transposeMatrix.reverse();
+      var rotatedString = this.printRotated(rotatedLeft);
+      return new RotatingShape(rotatedString);
     }
-    var rotatedString = this.printRotated(rotatedLeft);
-    var shape = new RotatingShape(rotatedString);
-    return shape;
+  }
+
+  rotateLeftI() {
+    var transposeMatrix = _.zip(...this.shapeMatrix);
+    if (this.orientation === 'left') {
+      var rotatedLeft = transposeMatrix.map(row => row.reverse());
+      var rotatedString = this.printRotated(rotatedLeft);
+      return new RotatingShape(rotatedString, this.type, 'up');
+    } else {
+      var rotatedLeft = transposeMatrix.reverse();
+      var rotatedString = this.printRotated(rotatedLeft);
+      return new RotatingShape(rotatedString, this.type, 'left');
+    }
   }
 
   printRotated(shape) { 
