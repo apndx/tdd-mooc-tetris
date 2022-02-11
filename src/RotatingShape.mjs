@@ -36,7 +36,10 @@ export class RotatingShape {
   }
 
   rotateRight() {
-    if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+    if (typeof this.type !== "undefined" && this.type === 'O_SHAPE') {
+      return this;
+    }
+    else if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
       return this.rotateRightI()
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
@@ -60,7 +63,10 @@ export class RotatingShape {
   }
 
   rotateLeft() {
-    if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+    if (typeof this.type !== "undefined" && this.type === 'O_SHAPE') {
+      return this;
+    }
+    else if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
       return this.rotateLeftI()
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
