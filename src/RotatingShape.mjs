@@ -4,14 +4,14 @@ export class RotatingShape {
   shapeAlphabet;
   shapeMatrix;
   size;
-  type;
+  color;
   orientation;
 
-  constructor(shape, type, orientation) {
+  constructor(shape, color, orientation) {
     // expecting square boards
     this.shapeAlphabet= this.getShapeAlphabet(shape);
     this.shapeMatrix = this.initializeShape();
-    this.type = type;
+    this.color = color;
     this.orientation = orientation;
   }
 
@@ -36,10 +36,10 @@ export class RotatingShape {
   }
 
   rotateRight() {
-    if (typeof this.type !== "undefined" && this.type === 'O_SHAPE') {
+    if (typeof this.color !== "undefined" && this.color === 'O') {
       return this;
     }
-    else if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+    else if (typeof this.color !== "undefined" && this.color === 'I') {
       return this.rotateRightI()
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
@@ -54,19 +54,19 @@ export class RotatingShape {
     if (this.orientation === 'up') {
       var rotatedRight = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.type, 'left');
+      return new RotatingShape(rotatedString, this.color, 'left');
     } else {
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.type, 'up');
+      return new RotatingShape(rotatedString, this.color, 'up');
     }
   }
 
   rotateLeft() {
-    if (typeof this.type !== "undefined" && this.type === 'O_SHAPE') {
+    if (typeof this.color !== "undefined" && this.color === 'O') {
       return this;
     }
-    else if (typeof this.type !== "undefined" && this.type === 'I_SHAPE') {
+    else if (typeof this.color !== "undefined" && this.color === 'I') {
       return this.rotateLeftI()
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
@@ -81,11 +81,11 @@ export class RotatingShape {
     if (this.orientation === 'left') {
       var rotatedLeft = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString, this.type, 'up');
+      return new RotatingShape(rotatedString, this.color, 'up');
     } else {
       var rotatedLeft = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString, this.type, 'left');
+      return new RotatingShape(rotatedString, this.color, 'left');
     }
   }
 
