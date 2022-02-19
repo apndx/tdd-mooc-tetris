@@ -3,6 +3,13 @@ import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 
+function tryToMoveOverTheEdge(board, direction) {
+  for (let i = 0; i < 6; i++) {
+    board.move(direction);
+    //console.log(board);
+  }
+}
+
 
 describe("A falling tetrominoe", () => {
   let board;
@@ -46,6 +53,20 @@ describe("A falling tetrominoe", () => {
       `..........
        ....T.....
        ...TTT....
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("cannot be moved left beyond the board", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    tryToMoveOverTheEdge(board, 'left')
+    expect(board.toString()).to.equalShape(
+      `.T........
+       TTT.......
+       ..........
        ..........
        ..........
        ..........`

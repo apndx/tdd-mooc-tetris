@@ -141,10 +141,22 @@ export class Board {
     }
   }
 
+  updateBlockLimitsMovingLeft(block) {
+    if (block !== null) {
+      const limits = block.limits;
+      const newLimits = {...limits, left: limits.left-1, right: limits.right-1 }
+      this.fallingBlock = {...block, limits: newLimits};
+    }
+  }
+
   isThereSpaceBelow(rowIdx, colIdx) {
     const emptySpace = this.board[rowIdx+1][colIdx] === ".";
     const lastRow = rowIdx === this.height -1;
     return emptySpace || lastRow;
+  }
+
+  isThereSpaceLeft(rowIdx, colIdx) {
+    return this.board[rowIdx][colIdx-1] === ".";
   }
 
   makeBoardArray = (width, height) => {
@@ -168,14 +180,24 @@ export class Board {
       const down = block.limits.down;
       const left = block.limits.left;
       if (direction === 'left') {
-        for (var i=down; i>up-1; i--) {
-          for (var j=left; j<right+1; j++) {
-            this.board[i][j-1] = this.board[i][j];
-          }
+        var stillRoom = true;
+        for (var i=up; i<down; i++) {
+          if ((left < 1) || !(this.isThereSpaceLeft(i, left))) {
+            stillRoom = false;
+            break;
+          } 
         }
-        // clean the right column
-        for (var k=down; k>up; k--) {
-          this.board[k][right] = ".";
+        if (stillRoom) {
+          for (var i=down; i>up-1; i--) {
+            for (var j=left; j<right+1; j++) {
+              this.board[i][j-1] = this.board[i][j];
+            }
+          }
+          // clean the right column
+          for (var k=down; k>up; k--) {
+            this.board[k][right] = ".";
+          }
+          this.updateBlockLimitsMovingLeft(this.fallingBlock)
         }
       } else if (direction === 'right') {
         for (var i=down; i>up-1; i--) {
@@ -183,7 +205,6 @@ export class Board {
             this.board[i][j+1] = this.board[i][j];
           }
         }
-
         // clean the left column
         for (var k=down; k>up; k--) {
           this.board[k][left] = ".";
