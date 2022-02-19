@@ -9,8 +9,8 @@ function tryToMoveOverTheEdge(board, direction) {
   }
 }
 
-function moveToBottom(board) {
-  for (let i = 0; i < 10; i++) {
+function moveDown(board, times) {
+  for (let i = 0; i < times; i++) {
     board.move('down');
   }
 }
@@ -95,12 +95,64 @@ describe("A falling tetrominoe", () => {
   it("cannot be moved down beyond the board", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    moveToBottom(board);
+    moveDown(board, 6);
     expect(board.toString()).to.equalShape(
       `..........
        ..........
        ..........
        ..........
+       ....T.....
+       ...TTT....`
+    );
+  });
+
+  it("cannot be moved left through other blocks", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    tryToMoveOverTheEdge(board, 'left')
+    moveDown(board, 6);
+    board.drop(shape);
+    moveDown(board, 4);
+    tryToMoveOverTheEdge(board, 'left')
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ..........
+       .T..T.....
+       TTTTTT....`
+    );
+  });
+
+  it("cannot be moved right through other blocks", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    tryToMoveOverTheEdge(board, 'right')
+    moveDown(board, 6);
+    board.drop(shape);
+    moveDown(board, 4);
+    tryToMoveOverTheEdge(board, 'right')
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ..........
+       .....T..T.
+       ....TTTTTT`
+    );
+  });
+
+  it("cannot be moved down through other blocks", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    moveDown(board, 6);
+    board.drop(shape);
+    moveDown(board, 6);
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ....T.....
+       ...TTT....
        ....T.....
        ...TTT....`
     );

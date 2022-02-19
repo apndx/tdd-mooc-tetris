@@ -182,7 +182,7 @@ export class Board {
       const down = block.limits.down;
       const left = block.limits.left;
       if (direction === 'left') {
-        this.moveLeft(up,right,down,left);
+        this.moveLeft(up, right, down, left);
       } else if (direction === 'right') {
         this.moveRight(up, right, down, left);
       } else {
@@ -193,7 +193,7 @@ export class Board {
 
   moveLeft(up, right, down, left) {
     var stillRoom = true;
-    for (var i=up; i<down; i++) {
+    for (var i=up; i<down+1; i++) {
       if ((left < 1) || !(this.isThereSpaceHorizontal(i, left, 'left'))) {
         stillRoom = false;
         break;
@@ -215,7 +215,7 @@ export class Board {
 
   moveRight(up, right, down, left) {
     var stillRoom = true;
-    for (var i=up; i<down; i++) {
+    for (var i=up; i<down+1; i++) {
       if ((right > this.width-2) || !(this.isThereSpaceHorizontal(i, right, 'right'))) {
         stillRoom = false;
         break;
