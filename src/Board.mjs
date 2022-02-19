@@ -101,9 +101,9 @@ export class Board {
   }
 
   moveBlockDownIfItShould() {
-    var right= this.fallingBlock.limits.right;
+    var right = this.fallingBlock.limits.right;
     var down = this.fallingBlock.limits.down;
-    var left= this.fallingBlock.limits.left;
+    var left = this.fallingBlock.limits.left;
     for (var i=left; i<right; i++) {
       if (!(down < this.height-1 && this.isThereSpaceBelow(down, i))) {
         this.fallingBlock = null;
@@ -159,5 +159,39 @@ export class Board {
     }
     return board;
   };
+
+  move(direction) {
+    if (this.fallingBlock !== null) {
+      const block = this.fallingBlock;
+      const up = block.limits.up;
+      const right = block.limits.right;
+      const down = block.limits.down;
+      const left = block.limits.left;
+      if (direction === 'left') {
+        for (var i=down; i>up-1; i--) {
+          for (var j=left; j<right+1; j++) {
+            this.board[i][j-1] = this.board[i][j];
+          }
+        }
+        // clean the right column
+        for (var k=down; k>up; k--) {
+          this.board[k][right] = ".";
+        }
+      } else if (direction === 'right') {
+        for (var i=down; i>up-1; i--) {
+          for (var j=right; j>left-1; j--) {
+            this.board[i][j+1] = this.board[i][j];
+          }
+        }
+
+        // clean the left column
+        for (var k=down; k>up; k--) {
+          this.board[k][left] = ".";
+        }
+      } else {
+        this.tick();
+      }
+    }
+  }
 
 }
