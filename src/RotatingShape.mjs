@@ -1,18 +1,22 @@
 import _ from 'lodash';
 
 export class RotatingShape {
+  shape;
   shapeAlphabet;
   shapeMatrix;
   size;
   color;
   orientation;
+  limits;
 
-  constructor(shape, color, orientation) {
+  constructor(shape, color, orientation, limits) {
     // expecting square boards
+    this.shape = shape;
     this.shapeAlphabet= this.getShapeAlphabet(shape);
     this.shapeMatrix = this.initializeShape();
     this.color = color;
     this.orientation = orientation;
+    this.limits = limits;
   }
 
   initializeShape() {
