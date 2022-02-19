@@ -6,7 +6,12 @@ import { Tetromino } from "../src/Tetromino.mjs";
 function tryToMoveOverTheEdge(board, direction) {
   for (let i = 0; i < 6; i++) {
     board.move(direction);
-    //console.log(board);
+  }
+}
+
+function moveToBottom(board) {
+  for (let i = 0; i < 10; i++) {
+    board.move('down');
   }
 }
 
@@ -70,6 +75,34 @@ describe("A falling tetrominoe", () => {
        ..........
        ..........
        ..........`
+    );
+  });
+
+  it("cannot be moved right beyond the board", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    tryToMoveOverTheEdge(board, 'right')
+    expect(board.toString()).to.equalShape(
+      `........T.
+       .......TTT
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("cannot be moved down beyond the board", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    moveToBottom(board);
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ..........
+       ....T.....
+       ...TTT....`
     );
   });
 

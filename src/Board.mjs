@@ -141,10 +141,11 @@ export class Board {
     }
   }
 
-  updateBlockLimitsMovingLeft(block) {
+  updateBlockLimitsMovingHorizontal(block, direction) {
     if (block !== null) {
       const limits = block.limits;
-      const newLimits = {...limits, left: limits.left-1, right: limits.right-1 }
+      const change = direction === 'left' ? -1 : +1;
+      const newLimits = {...limits, left: limits.left+change, right: limits.right+change}
       this.fallingBlock = {...block, limits: newLimits};
     }
   }
@@ -155,8 +156,9 @@ export class Board {
     return emptySpace || lastRow;
   }
 
-  isThereSpaceLeft(rowIdx, colIdx) {
-    return this.board[rowIdx][colIdx-1] === ".";
+  isThereSpaceHorizontal(rowIdx, colIdx, direction) {
+    const checkedIdx = direction === 'left' ? colIdx-1 : colIdx+1;
+    return this.board[rowIdx][checkedIdx] === ".";
   }
 
   makeBoardArray = (width, height) => {
@@ -180,38 +182,56 @@ export class Board {
       const down = block.limits.down;
       const left = block.limits.left;
       if (direction === 'left') {
-        var stillRoom = true;
-        for (var i=up; i<down; i++) {
-          if ((left < 1) || !(this.isThereSpaceLeft(i, left))) {
-            stillRoom = false;
-            break;
-          } 
-        }
-        if (stillRoom) {
-          for (var i=down; i>up-1; i--) {
-            for (var j=left; j<right+1; j++) {
-              this.board[i][j-1] = this.board[i][j];
-            }
-          }
-          // clean the right column
-          for (var k=down; k>up; k--) {
-            this.board[k][right] = ".";
-          }
-          this.updateBlockLimitsMovingLeft(this.fallingBlock)
-        }
+        this.moveLeft(up,right,down,left);
       } else if (direction === 'right') {
-        for (var i=down; i>up-1; i--) {
-          for (var j=right; j>left-1; j--) {
-            this.board[i][j+1] = this.board[i][j];
-          }
-        }
-        // clean the left column
-        for (var k=down; k>up; k--) {
-          this.board[k][left] = ".";
-        }
+        this.moveRight(up, right, down, left);
       } else {
         this.tick();
       }
+    }
+  }
+
+  moveLeft(up, right, down, left) {
+    var stillRoom = true;
+    for (var i=up; i<down; i++) {
+      if ((left < 1) || !(this.isThereSpaceHorizontal(i, left, 'left'))) {
+        stillRoom = false;
+        break;
+      }
+    }
+    if (stillRoom) {
+      for (var i=down; i>up-1; i--) {
+        for (var j=left; j<right+1; j++) {
+          this.board[i][j-1] = this.board[i][j];
+        }
+      }
+      // clean the right column
+      for (var k=down; k>up; k--) {
+        this.board[k][right] = ".";
+      }
+      this.updateBlockLimitsMovingHorizontal(this.fallingBlock, 'left');
+    }
+  }
+
+  moveRight(up, right, down, left) {
+    var stillRoom = true;
+    for (var i=up; i<down; i++) {
+      if ((right > this.width-2) || !(this.isThereSpaceHorizontal(i, right, 'right'))) {
+        stillRoom = false;
+        break;
+      }
+    }
+    if (stillRoom) {
+      for (var i=down; i>up-1; i--) {
+        for (var j=right; j>left-1; j--) {
+          this.board[i][j+1] = this.board[i][j];
+        }
+      }
+      // clean the left column
+      for (var k=down; k>up; k--) {
+        this.board[k][left] = ".";
+      }
+      this.updateBlockLimitsMovingHorizontal(this.fallingBlock, 'right');
     }
   }
 
