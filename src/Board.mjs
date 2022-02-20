@@ -99,6 +99,18 @@ export class Board {
     }
   }
 
+  getIRotationLimits(limits) {
+    const newOrientation = this.fallingBlock.orientation;
+    switch (newOrientation) {
+    case 'up':
+      return {...limits, down: limits.down+1, left: limits.left-2, up: limits.up+2, right: limits.right+1};
+    case 'left':
+      return {...limits, down: limits.down-1, left: limits.left+2, up: limits.up-2, right: limits.right-1};
+    default:
+      return limits;
+    }
+  }
+
   tick() {
     if (this.fallingBlock) {
       var size = this.getBlockSize(this.fallingBlock.color);
@@ -274,7 +286,7 @@ export class Board {
     const cornerX = this.fallingBlock.cornerX;
     const cornerY = this.fallingBlock.cornerY;
     this.fallingBlock = block.rotateRight();
-    const limits = this.getTRightRotationLimits(oldLimits);
+    const limits = this.fallingBlock.color === 'T' ? this.getTRightRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
     this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
     this.drawBoardAfterRightRotation();
   }
@@ -284,7 +296,7 @@ export class Board {
     const cornerX = this.fallingBlock.cornerX;
     const cornerY = this.fallingBlock.cornerY;
     this.fallingBlock = block.rotateLeft();
-    const limits = this.getTLeftRotationLimits(oldLimits);
+    const limits = this.fallingBlock.color === 'T' ? this.getTLeftRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
     this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
     this.drawBoardAfterRightRotation();
   }
@@ -298,11 +310,14 @@ export class Board {
       const down = block.limits.down;
       const left = block.limits.left;
       const size =this.fallingBlock.size;
-      const start = this.fallingBlock.cornerX;
+      const startX = this.fallingBlock.cornerX;
+      const startY = this.fallingBlock.cornerY;
       if (this.isThereRoomToRotate(up, right, down, left)) {
         for (var i=0; i<size; i++) {
           for (var j=0; j<size; j++) {
-            this.board[i+up][j+start] = this.fallingBlock.shapeMatrix[i][j];
+            if (i+startY<this.height-1 && j+startX < this.width-1) {
+              this.board[i+startY][j+startX] = this.fallingBlock.shapeMatrix[i][j];
+            }
           }
         }
       }
