@@ -65,6 +65,22 @@ export class Board {
     }
   }
 
+  getTRightRotationLimits(limits) {
+    const newOrientation = this.fallingBlock.orientation;
+    switch (newOrientation) {
+    case 'up':
+      return {...limits, down: limits.down-1, right: limits.rigth+1};
+    case 'right':
+      return {...limits, left: limits.left-1, down: limits.down+1};
+    case 'down':
+      return {...limits, up: limits.up+1, left: limits.left-1};
+    case 'left':
+      return {...limits, right: limits.right-1, up: limits.up-1};
+    default:
+      return limits;
+    }
+  }
+
   tick() {
     if (this.fallingBlock) {
       var size = this.getBlockSize(this.fallingBlock.color);
@@ -235,4 +251,36 @@ export class Board {
     }
   }
 
+  rotateFallingRight(block) {
+    const oldLimits = this.fallingBlock.limits;
+    this.fallingBlock = block.rotateRight();
+    const limits = this.getTRightRotationLimits(oldLimits);
+    this.fallingBlock = {...this.fallingBlock, limits};
+    this.drawBoardAfterRightRotation();
+  }
+
+  drawBoardAfterRightRotation() {
+    if (this.fallingBlock !== null) {
+      const block = this.fallingBlock;
+      const up = block.limits.up;
+      const right = block.limits.right;
+      const down = block.limits.down;
+      const left = block.limits.left;
+      const size =this.fallingBlock.size;
+      if (this.isThereRoomToRotate(up, right, down, left)) {
+        for (var i=0; i<size; i++) {
+          for (var j=0; j<size; j++) {
+            this.board[i+up][j+left+1] = this.fallingBlock.shapeMatrix[i][j];
+          }
+        }
+      }
+    }
+  }
+
+  isThereRoomToRotate(up, right, down, left) {
+    return (up > -1 && right < this.width-1 && down < this.height-1 && left > -1) ?
+      true : 
+      false;
+    }
+  
 }

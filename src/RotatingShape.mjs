@@ -10,7 +10,7 @@ export class RotatingShape {
   limits;
 
   constructor(shape, color, orientation, limits) {
-    // expecting square boards
+    // expecting square shape boards
     this.shape = shape;
     this.shapeAlphabet= this.getShapeAlphabet(shape);
     this.shapeMatrix = this.initializeShape();
@@ -39,6 +39,39 @@ export class RotatingShape {
     return shape.replace(/ /g, '').replace(/\n/g, '').split('');
   }
 
+  getNextOrientationRight() {
+    const oldOrientation = this.orientation;
+    switch (oldOrientation) {
+      case 'up':
+        return 'right';
+      case 'right':
+        return 'down';
+      case 'down':
+        return 'left';
+      case 'left':
+        return 'up';
+      default:
+        return 'up'
+      }
+  }
+
+  getNextOrientationLeft() {
+    const oldOrientation = this.orientation;
+    switch (oldOrientation) {
+      case 'up':
+        return 'left';
+      case 'left':
+        return 'down';
+      case 'down':
+        return 'right';
+      case 'right':
+        return 'up';
+      default:
+        return 'up'
+      }
+  }
+
+
   rotateRight() {
     if (typeof this.color !== "undefined" && this.color === 'O') {
       return this;
@@ -49,7 +82,7 @@ export class RotatingShape {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString);
+      return new RotatingShape(rotatedString, this.color, this.getNextOrientationRight());
     }
   }
 
@@ -76,7 +109,7 @@ export class RotatingShape {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedLeft = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString);
+      return new RotatingShape(rotatedString, this.color, this.getNextOrientationLeft());
     }
   }
 
