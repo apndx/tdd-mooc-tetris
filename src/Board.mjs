@@ -41,9 +41,11 @@ export class Board {
           }
           blockStart = Math.ceil(this.placement-(size/2))
         }
+        const cornerX = Math.ceil(this.placement-(size/2));
+        const cornerY = 0;
         const limits = block.limits;
         const newLimits = {...limits, right: block.limits.right+this.placement, left: block.limits.left + this.placement }
-        this.fallingBlock = {...block, limits: newLimits};
+        this.fallingBlock = {...block, limits: newLimits, cornerX, cornerY};
       }
     } else {
       throw 'already falling'
@@ -76,6 +78,22 @@ export class Board {
       return {...limits, up: limits.up+1, left: limits.left-1};
     case 'left':
       return {...limits, right: limits.right-1, up: limits.up-1};
+    default:
+      return limits;
+    }
+  }
+
+  getTLeftRotationLimits(limits) {
+    const newOrientation = this.fallingBlock.orientation;
+    switch (newOrientation) {
+    case 'up':
+      return {...limits, down: limits.down-1, left: limits.left-1};
+    case 'right':
+      return {...limits, left: limits.left+1, down: limits.down+1};
+    case 'down':
+      return {...limits, up: limits.up+1, right: limits.right+1};
+    case 'left':
+      return {...limits, down: limits.down+1, right: limits.right-1};
     default:
       return limits;
     }
@@ -152,8 +170,8 @@ export class Board {
   updateFallingBlockLimits(block) {
     if (block !== null) {
       const limits = block.limits;
-      const newLimits = {...limits, up: block.limits.up +1, down: block.limits.down + 1 }
-      this.fallingBlock = {...block, limits: newLimits};
+      const newLimits = {...limits, up: block.limits.up +1, down: block.limits.down +1 }
+      this.fallingBlock = {...block, limits: newLimits, cornerY: block.cornerY +1};
     }
   }
 
@@ -162,7 +180,7 @@ export class Board {
       const limits = block.limits;
       const change = direction === 'left' ? -1 : +1;
       const newLimits = {...limits, left: limits.left+change, right: limits.right+change}
-      this.fallingBlock = {...block, limits: newLimits};
+      this.fallingBlock = {...block, limits: newLimits, cornerX: block.cornerX+change};
     }
   }
 
@@ -253,11 +271,24 @@ export class Board {
 
   rotateFallingRight(block) {
     const oldLimits = this.fallingBlock.limits;
+    const cornerX = this.fallingBlock.cornerX;
+    const cornerY = this.fallingBlock.cornerY;
     this.fallingBlock = block.rotateRight();
     const limits = this.getTRightRotationLimits(oldLimits);
-    this.fallingBlock = {...this.fallingBlock, limits};
+    this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
     this.drawBoardAfterRightRotation();
   }
+
+  rotateFallingLeft(block) {
+    const oldLimits = this.fallingBlock.limits;
+    const cornerX = this.fallingBlock.cornerX;
+    const cornerY = this.fallingBlock.cornerY;
+    this.fallingBlock = block.rotateLeft();
+    const limits = this.getTLeftRotationLimits(oldLimits);
+    this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
+    this.drawBoardAfterRightRotation();
+  }
+
 
   drawBoardAfterRightRotation() {
     if (this.fallingBlock !== null) {
@@ -267,10 +298,11 @@ export class Board {
       const down = block.limits.down;
       const left = block.limits.left;
       const size =this.fallingBlock.size;
+      const start = this.fallingBlock.cornerX;
       if (this.isThereRoomToRotate(up, right, down, left)) {
         for (var i=0; i<size; i++) {
           for (var j=0; j<size; j++) {
-            this.board[i+up][j+left+1] = this.fallingBlock.shapeMatrix[i][j];
+            this.board[i+up][j+start] = this.fallingBlock.shapeMatrix[i][j];
           }
         }
       }

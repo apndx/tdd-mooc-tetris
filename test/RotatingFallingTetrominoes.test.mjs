@@ -23,6 +23,20 @@ describe("Falling T-Shape", () => {
     );
   });
 
+  it("can be rotated left/counter-clockwise", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    board.rotateFallingLeft(shape);
+    expect(board.toString()).to.equalShape(
+      `....T.....
+       ...TT.....
+       ....T.....
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
 });
 
 // Falling T-Shape can be rotated right/clockwise

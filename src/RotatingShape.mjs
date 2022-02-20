@@ -8,8 +8,10 @@ export class RotatingShape {
   color;
   orientation;
   limits;
+  cornerX;
+  cornerY;
 
-  constructor(shape, color, orientation, limits) {
+  constructor(shape, color, orientation, limits, cornerX, cornerY) {
     // expecting square shape boards
     this.shape = shape;
     this.shapeAlphabet= this.getShapeAlphabet(shape);
@@ -17,6 +19,8 @@ export class RotatingShape {
     this.color = color;
     this.orientation = orientation;
     this.limits = limits;
+    this.cornerX = cornerX;
+    this.cornerY = cornerY;
   }
 
   initializeShape() {
@@ -82,7 +86,7 @@ export class RotatingShape {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, this.getNextOrientationRight());
+      return new RotatingShape(rotatedString, this.color, this.getNextOrientationRight(), this.cornerX, this.cornerY);
     }
   }
 
@@ -91,11 +95,11 @@ export class RotatingShape {
     if (this.orientation === 'up') {
       var rotatedRight = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, 'left');
+      return new RotatingShape(rotatedString, this.color, 'left', this.cornerX, this.cornerY);
     } else {
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, 'up');
+      return new RotatingShape(rotatedString, this.color, 'up', this.cornerX, this.cornerY);
     }
   }
 
