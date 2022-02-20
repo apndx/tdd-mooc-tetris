@@ -58,7 +58,7 @@ describe("Falling I-Shape", () => {
     );
   });
 
-  xit("can be rotated left/counter-clockwise", () => {
+  it("can be rotated left/counter-clockwise", () => {
     const shape = Tetromino.I_SHAPE;
     board.drop(shape);
     board.rotateFallingLeft(shape);
