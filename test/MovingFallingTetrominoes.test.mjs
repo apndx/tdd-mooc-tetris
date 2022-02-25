@@ -1,4 +1,3 @@
-
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
@@ -11,10 +10,9 @@ function tryToMoveOverTheEdge(board, direction) {
 
 function moveDown(board, times) {
   for (let i = 0; i < times; i++) {
-    board.move('down');
+    board.move("down");
   }
 }
-
 
 describe("A falling tetrominoe", () => {
   let board;
@@ -25,7 +23,7 @@ describe("A falling tetrominoe", () => {
   it("can be moved left", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.move('left');
+    board.move("left");
     expect(board.toString()).to.equalShape(
       `...T......
        ..TTT.....
@@ -39,7 +37,7 @@ describe("A falling tetrominoe", () => {
   it("can be moved right", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.move('right');
+    board.move("right");
     expect(board.toString()).to.equalShape(
       `.....T....
        ....TTT...
@@ -53,7 +51,7 @@ describe("A falling tetrominoe", () => {
   it("can be moved down", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.move('down');
+    board.move("down");
     expect(board.toString()).to.equalShape(
       `..........
        ....T.....
@@ -67,7 +65,7 @@ describe("A falling tetrominoe", () => {
   it("cannot be moved left beyond the board", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    tryToMoveOverTheEdge(board, 'left')
+    tryToMoveOverTheEdge(board, "left");
     expect(board.toString()).to.equalShape(
       `.T........
        TTT.......
@@ -81,7 +79,7 @@ describe("A falling tetrominoe", () => {
   it("cannot be moved right beyond the board", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    tryToMoveOverTheEdge(board, 'right')
+    tryToMoveOverTheEdge(board, "right");
     expect(board.toString()).to.equalShape(
       `........T.
        .......TTT
@@ -109,11 +107,11 @@ describe("A falling tetrominoe", () => {
   it("cannot be moved left through other blocks", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    tryToMoveOverTheEdge(board, 'left')
+    tryToMoveOverTheEdge(board, "left");
     moveDown(board, 6);
     board.drop(shape);
     moveDown(board, 4);
-    tryToMoveOverTheEdge(board, 'left')
+    tryToMoveOverTheEdge(board, "left");
     expect(board.toString()).to.equalShape(
       `..........
        ..........
@@ -127,11 +125,11 @@ describe("A falling tetrominoe", () => {
   it("cannot be moved right through other blocks", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    tryToMoveOverTheEdge(board, 'right')
+    tryToMoveOverTheEdge(board, "right");
     moveDown(board, 6);
     board.drop(shape);
     moveDown(board, 4);
-    tryToMoveOverTheEdge(board, 'right')
+    tryToMoveOverTheEdge(board, "right");
     expect(board.toString()).to.equalShape(
       `..........
        ..........
@@ -157,6 +155,4 @@ describe("A falling tetrominoe", () => {
        ...TTT....`
     );
   });
-
 });
-

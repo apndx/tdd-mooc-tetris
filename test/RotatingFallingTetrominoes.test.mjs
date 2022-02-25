@@ -1,7 +1,7 @@
-
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
+import { fallToBottom } from "./Helpers.mjs";
 
 function tryToMoveOverTheEdge(board, direction) {
   for (let i = 0; i < 6; i++) {
@@ -124,7 +124,7 @@ describe("Falling T-Shape", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
     board.rotateFallingLeft();
-    tryToMoveOverTheEdge(board, 'right');
+    tryToMoveOverTheEdge(board, "right");
     board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `.........T
@@ -140,7 +140,7 @@ describe("Falling T-Shape", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
     board.rotateFallingRight();
-    tryToMoveOverTheEdge(board, 'left');
+    tryToMoveOverTheEdge(board, "left");
     board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
       `T.........
@@ -152,6 +152,36 @@ describe("Falling T-Shape", () => {
     );
   });
 });
+
+describe("Rotating T-Shape", () => {
+  let board;
+  beforeEach(() => {
+    board = new Board(10, 6);
+  });
+
+  it("should not effect existing shapes", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    fallToBottom(board);
+    board.drop(shape);
+    board.move("left");
+    board.tick();
+    board.tick();
+    console.log("falling", board.hasFalling());
+    board.rotateFallingRight();
+    console.log(board.toString());
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ...T......
+       ...TT.....
+       ...TT.....
+       ...TTT....`
+    );
+  });
+});
+
+// Rotating T-Shape should not effect existing shapes
 
 // Falling T-Shape gets a wall kick if rotated too near the right wall
 // Falling T-Shape gets a wall kick if rotated too near the left wall
