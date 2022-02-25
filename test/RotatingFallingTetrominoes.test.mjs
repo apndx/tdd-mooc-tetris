@@ -167,7 +167,6 @@ describe("Rotating T-Shape", () => {
     board.move("left");
     board.tick();
     board.tick();
-    console.log("falling", board.hasFalling());
     board.rotateFallingRight();
     console.log(board.toString());
     expect(board.toString()).to.equalShape(
@@ -175,8 +174,8 @@ describe("Rotating T-Shape", () => {
        ..........
        ...T......
        ...TT.....
-       ...TT.....
-       ...TTT....`
+       ...Tt.....
+       ...ttt....`
     );
   });
 });

@@ -72,7 +72,7 @@ describe("Falling blocks", () => {
       expect(board.toString()).to.equalShape(
         `...
          ...
-         .X.`
+         .x.`
       );
       expect(board.hasFalling(), "the block should stop moving").to.be.false;
     });
@@ -92,7 +92,7 @@ describe("Falling blocks", () => {
       expect(board.toString()).to.equalShape(
         `...
          .Y.
-         .X.`
+         .x.`
       );
       expect(
         board.hasFalling(),
@@ -105,8 +105,8 @@ describe("Falling blocks", () => {
 
       expect(board.toString()).to.equalShape(
         `...
-         .Y.
-         .X.`
+         .y.
+         .x.`
       );
       expect(board.hasFalling(), "the block should stop moving").to.be.false;
     });
