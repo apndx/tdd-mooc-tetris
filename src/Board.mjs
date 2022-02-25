@@ -1,3 +1,5 @@
+import { RotatingShape } from "./RotatingShape.mjs";
+
 export class Board {
   width;
   height;
@@ -28,11 +30,13 @@ export class Board {
 
  drop(block) {
     if (!this.hasFalling()) {
-      this.fallingBlock = block;
+ 
       var size = this.getBlockSize(block.color);
       if (size === 1) {
+        this.fallingBlock = block;
         this.board[0][this.placement] = block.color;
       } else {
+        this.fallingBlock = new RotatingShape(block.shape, block.color, block.orientation, block.limits);
         var blockStart = Math.ceil(this.placement-(size/2))
         for (var i=0; i<size; i++) {
           for (var j=0; j<size; j++) {
@@ -45,7 +49,7 @@ export class Board {
         const cornerY = 0;
         const limits = block.limits;
         const newLimits = {...limits, right: block.limits.right+this.placement, left: block.limits.left + this.placement }
-        this.fallingBlock = {...block, limits: newLimits, cornerX, cornerY};
+        this.fallingBlock = new RotatingShape(block.shape, block.color, block.orientation, newLimits, cornerX, cornerY);
       }
     } else {
       throw 'already falling'
@@ -71,9 +75,9 @@ export class Board {
     const newOrientation = this.fallingBlock.orientation;
     switch (newOrientation) {
     case 'up':
-      return {...limits, down: limits.down-1, right: limits.rigth+1};
+      return {...limits, down: limits.down-1, right: limits.right+1};
     case 'right':
-      return {...limits, left: limits.left-1, down: limits.down+1};
+      return {...limits, left: limits.left+1, down: limits.down+1};
     case 'down':
       return {...limits, up: limits.up+1, left: limits.left-1};
     case 'left':
@@ -112,7 +116,7 @@ export class Board {
   }
 
   tick() {
-    if (this.fallingBlock) {
+    if (this.hasFalling()) {
       var size = this.getBlockSize(this.fallingBlock.color);
       if (size ===1) {
         this.tick1();
@@ -183,7 +187,7 @@ export class Board {
     if (block !== null) {
       const limits = block.limits;
       const newLimits = {...limits, up: block.limits.up +1, down: block.limits.down +1 }
-      this.fallingBlock = {...block, limits: newLimits, cornerY: block.cornerY +1};
+      this.fallingBlock = new RotatingShape(block.shape, block.color, block.orientation, newLimits, block.cornerX, block.cornerY +1 );
     }
   }
 
@@ -191,8 +195,8 @@ export class Board {
     if (block !== null) {
       const limits = block.limits;
       const change = direction === 'left' ? -1 : +1;
-      const newLimits = {...limits, left: limits.left+change, right: limits.right+change}
-      this.fallingBlock = {...block, limits: newLimits, cornerX: block.cornerX+change};
+      const newLimits = {...limits, left: limits.left+change, right: limits.right+change};
+      this.fallingBlock = new RotatingShape(block.shape, block.color, block.orientation, newLimits, block.cornerX+change, block.cornerY );
     }
   }
 
@@ -281,27 +285,23 @@ export class Board {
     }
   }
 
-  rotateFallingRight(block) {
-    if (block.color !== 'O') {
+  rotateFallingRight() {
+    if (this.fallingBlock !== null && this.fallingBlock.color !== 'O') {
       const oldLimits = this.fallingBlock.limits;
-      const cornerX = this.fallingBlock.cornerX;
-      const cornerY = this.fallingBlock.cornerY;
-      this.fallingBlock = block.rotateRight();
-      const limits = this.fallingBlock.color === 'T' ? this.getTRightRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
-      this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
+      this.fallingBlock =  this.fallingBlock.rotateRight();
+      const newLimits = this.fallingBlock.color === 'T' ? this.getTRightRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
+      this.fallingBlock = new RotatingShape(this.fallingBlock.shape, this.fallingBlock.color, this.fallingBlock.orientation, newLimits, this.fallingBlock.cornerX, this.fallingBlock.cornerY);
       this.drawBoardAfterRightRotation();
     }
   }
 
-  rotateFallingLeft(block) {
-    if (block.color !== 'O') {
-    const oldLimits = this.fallingBlock.limits;
-    const cornerX = this.fallingBlock.cornerX;
-    const cornerY = this.fallingBlock.cornerY;
-    this.fallingBlock = block.rotateLeft();
-    const limits = this.fallingBlock.color === 'T' ? this.getTLeftRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
-    this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
-    this.drawBoardAfterRightRotation();
+  rotateFallingLeft() {
+    if (this.fallingBlock !== null && this.fallingBlock.color !== 'O') {
+      const oldLimits = this.fallingBlock.limits;
+      this.fallingBlock  = this.fallingBlock.rotateLeft();
+      const newLimits = this.fallingBlock.color === 'T' ? this.getTLeftRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
+      this.fallingBlock = new RotatingShape(this.fallingBlock.shape, this.fallingBlock.color, this.fallingBlock.orientation, newLimits, this.fallingBlock.cornerX, this.fallingBlock.cornerY);
+      this.drawBoardAfterRightRotation();
     }
   }
 
@@ -313,14 +313,14 @@ export class Board {
       const right = block.limits.right;
       const down = block.limits.down;
       const left = block.limits.left;
-      const size =this.fallingBlock.size;
-      const startX = this.fallingBlock.cornerX;
-      const startY = this.fallingBlock.cornerY;
+      const size = block.size;
+      const startX = block.cornerX;
+      const startY = block.cornerY;
       if (this.isThereRoomToRotate(up, right, down, left)) {
         for (var i=0; i<size; i++) {
           for (var j=0; j<size; j++) {
             if (i+startY<this.height-1 && j+startX < this.width-1) {
-              this.board[i+startY][j+startX] = this.fallingBlock.shapeMatrix[i][j];
+              this.board[i+startY][j+startX] = block.shapeMatrix[i][j];
             }
           }
         }

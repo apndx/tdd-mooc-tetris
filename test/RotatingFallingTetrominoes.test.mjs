@@ -18,7 +18,7 @@ describe("Falling T-Shape", () => {
   it("can be rotated right/clockwise", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.rotateFallingRight(shape);
+    board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `....T.....
        ....TT....
@@ -32,7 +32,7 @@ describe("Falling T-Shape", () => {
   it("can be rotated left/counter-clockwise", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.rotateFallingLeft(shape);
+    board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
       `....T.....
        ...TT.....
@@ -53,7 +53,7 @@ describe("Falling I-Shape", () => {
   it("can be rotated right/clockwise", () => {
     const shape = Tetromino.I_SHAPE;
     board.drop(shape);
-    board.rotateFallingRight(shape);
+    board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `....I.....
        ....I.....
@@ -67,7 +67,7 @@ describe("Falling I-Shape", () => {
   it("can be rotated left/counter-clockwise", () => {
     const shape = Tetromino.I_SHAPE;
     board.drop(shape);
-    board.rotateFallingLeft(shape);
+    board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
       `....I.....
        ....I.....
@@ -88,7 +88,7 @@ describe("Falling O-Shape", () => {
   it("cannot be rotated right/clockwise", () => {
     const shape = Tetromino.O_SHAPE;
     board.drop(shape);
-    board.rotateFallingRight(shape);
+    board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `....OO....
        ....OO....
@@ -102,7 +102,7 @@ describe("Falling O-Shape", () => {
   it("cannot be rotated left/counter-clockwise", () => {
     const shape = Tetromino.O_SHAPE;
     board.drop(shape);
-    board.rotateFallingLeft(shape);
+    board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
       `....OO....
        ....OO....
@@ -123,9 +123,9 @@ describe("Falling T-Shape", () => {
   it("cannot be rotated when there is no room to rotate on the right", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.rotateFallingLeft(shape);
+    board.rotateFallingLeft();
     tryToMoveOverTheEdge(board, 'right');
-    board.rotateFallingRight(shape);
+    board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `.........T
        ........TT
@@ -136,12 +136,12 @@ describe("Falling T-Shape", () => {
     );
   });
 
-  xit("Falling T-Shape cannot be rotated when there is no room to rotate on the left", () => {
+  it("cannot be rotated when there is no room to rotate on the left", () => {
     const shape = Tetromino.T_SHAPE;
     board.drop(shape);
-    board.rotateFallingRigth(shape);
+    board.rotateFallingRight();
     tryToMoveOverTheEdge(board, 'left');
-    board.rotateFallingLeft(shape);
+    board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
       `T.........
        TT........

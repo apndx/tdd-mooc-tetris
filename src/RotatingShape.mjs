@@ -8,8 +8,8 @@ export class RotatingShape {
   color;
   orientation;
   limits;
-  cornerX;
-  cornerY;
+  cornerX; // upper corner x of the rotating shape board
+  cornerY; // upper corner y of the rotating shape board
 
   constructor(shape, color, orientation, limits, cornerX, cornerY) {
     // expecting square shape boards
@@ -86,7 +86,7 @@ export class RotatingShape {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, this.getNextOrientationRight(), this.cornerX, this.cornerY);
+      return new RotatingShape(rotatedString, this.color, this.getNextOrientationRight(), this.limits, this.cornerX, this.cornerY);
     }
   }
 
@@ -95,11 +95,11 @@ export class RotatingShape {
     if (this.orientation === 'up') {
       var rotatedRight = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, 'left', this.cornerX, this.cornerY);
+      return new RotatingShape(rotatedString, this.color, 'left', this.limits, this.cornerX, this.cornerY);
     } else {
       var rotatedRight = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(rotatedString, this.color, 'up', this.cornerX, this.cornerY);
+      return new RotatingShape(rotatedString, this.color, 'up', this.limits, this.cornerX, this.cornerY);
     }
   }
 
@@ -113,7 +113,7 @@ export class RotatingShape {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedLeft = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString, this.color, this.getNextOrientationLeft());
+      return new RotatingShape(rotatedString, this.color, this.getNextOrientationLeft(), this.limits, this.cornerX, this.cornerY);
     }
   }
 
@@ -122,11 +122,11 @@ export class RotatingShape {
     if (this.orientation === 'left') {
       var rotatedLeft = transposeMatrix.map(row => row.reverse());
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString, this.color, 'up');
+      return new RotatingShape(rotatedString, this.color, 'up', this.limits, this.cornerX, this.cornerY);
     } else {
       var rotatedLeft = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(rotatedString, this.color, 'left');
+      return new RotatingShape(rotatedString, this.color, 'left', this.limits, this.cornerX, this.cornerY);
     }
   }
 
