@@ -73,11 +73,40 @@ describe("Falling I-Shape", () => {
   });
 });
 
+describe("Falling O-Shape", () => {
+  let board;
+  beforeEach(() => {
+    board = new Board(10, 6);
+  });
 
-// Falling I-Shape can be rotated right/clockwise
-// Falling I-Shape can be rotated left/counter-clockwise
-// Falling O-Shape can be rotated right/clockwise
-// Falling O-Shape can be rotated left/counter-clockwise
+  it("cannot be rotated right/clockwise", () => {
+    const shape = Tetromino.O_SHAPE;
+    board.drop(shape);
+    board.rotateFallingRight(shape);
+    expect(board.toString()).to.equalShape(
+      `....OO....
+       ....OO....
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  it("cannot be rotated left/counter-clockwise", () => {
+    const shape = Tetromino.O_SHAPE;
+    board.drop(shape);
+    board.rotateFallingLeft(shape);
+    expect(board.toString()).to.equalShape(
+      `....OO....
+       ....OO....
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+});
 
 // Falling T-Shape cannot be rotated when there is no room to rotate on the right
 // Falling T-Shape cannot be rotated when there is no room to rotate on the left

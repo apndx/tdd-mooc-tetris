@@ -282,16 +282,19 @@ export class Board {
   }
 
   rotateFallingRight(block) {
-    const oldLimits = this.fallingBlock.limits;
-    const cornerX = this.fallingBlock.cornerX;
-    const cornerY = this.fallingBlock.cornerY;
-    this.fallingBlock = block.rotateRight();
-    const limits = this.fallingBlock.color === 'T' ? this.getTRightRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
-    this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
-    this.drawBoardAfterRightRotation();
+    if (block.color !== 'O') {
+      const oldLimits = this.fallingBlock.limits;
+      const cornerX = this.fallingBlock.cornerX;
+      const cornerY = this.fallingBlock.cornerY;
+      this.fallingBlock = block.rotateRight();
+      const limits = this.fallingBlock.color === 'T' ? this.getTRightRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
+      this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
+      this.drawBoardAfterRightRotation();
+    }
   }
 
   rotateFallingLeft(block) {
+    if (block.color !== 'O') {
     const oldLimits = this.fallingBlock.limits;
     const cornerX = this.fallingBlock.cornerX;
     const cornerY = this.fallingBlock.cornerY;
@@ -299,6 +302,7 @@ export class Board {
     const limits = this.fallingBlock.color === 'T' ? this.getTLeftRotationLimits(oldLimits) : this.getIRotationLimits(oldLimits);
     this.fallingBlock = {...this.fallingBlock, limits, cornerX, cornerY};
     this.drawBoardAfterRightRotation();
+    }
   }
 
 
