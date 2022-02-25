@@ -3,6 +3,12 @@ import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 
+function tryToMoveOverTheEdge(board, direction) {
+  for (let i = 0; i < 6; i++) {
+    board.move(direction);
+  }
+}
+
 describe("Falling T-Shape", () => {
   let board;
   beforeEach(() => {
@@ -108,8 +114,44 @@ describe("Falling O-Shape", () => {
   });
 });
 
-// Falling T-Shape cannot be rotated when there is no room to rotate on the right
-// Falling T-Shape cannot be rotated when there is no room to rotate on the left
+describe("Falling T-Shape", () => {
+  let board;
+  beforeEach(() => {
+    board = new Board(10, 6);
+  });
+
+  it("cannot be rotated when there is no room to rotate on the right", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    board.rotateFallingLeft(shape);
+    tryToMoveOverTheEdge(board, 'right');
+    board.rotateFallingRight(shape);
+    expect(board.toString()).to.equalShape(
+      `.........T
+       ........TT
+       .........T
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+  xit("Falling T-Shape cannot be rotated when there is no room to rotate on the left", () => {
+    const shape = Tetromino.T_SHAPE;
+    board.drop(shape);
+    board.rotateFallingRigth(shape);
+    tryToMoveOverTheEdge(board, 'left');
+    board.rotateFallingLeft(shape);
+    expect(board.toString()).to.equalShape(
+      `T.........
+       TT........
+       T.........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+});
 
 // Falling T-Shape gets a wall kick if rotated too near the right wall
 // Falling T-Shape gets a wall kick if rotated too near the left wall
