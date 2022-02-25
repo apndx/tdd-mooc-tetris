@@ -6,6 +6,7 @@ export class Board {
   board;
   fallingBlock;
   placement;
+  oldies = ['t', 'i', 'o', 'x'];
 
   constructor(width, height) {
     this.width = width;
@@ -357,7 +358,7 @@ export class Board {
       const down = newLimits.down;
       const left = newLimits.left;
           
-      if (this.isThereRoomToRotate(up, right, down, left)) {     
+      if (this.isThereRoomToRotate(newBlock, up, right, down, left)) {     
         this.fallingBlock = new RotatingShape(
           newBlock.shape,
           newBlock.color,
@@ -384,7 +385,7 @@ export class Board {
       const right = newLimits.right;
       const down = newLimits.down;
       const left = newLimits.left;      
-      if (this.isThereRoomToRotate(up, right, down, left)) {     
+      if (this.isThereRoomToRotate(newBlock, up, right, down, left)) {     
         this.fallingBlock = new RotatingShape(
           newBlock.shape,
           newBlock.color,
@@ -407,24 +408,47 @@ export class Board {
       for (var i = 0; i < size; i++) {
         for (var j = 0; j < size; j++) {
           if (i + startY < this.height - 1 && j + startX < this.width - 1) {
-            this.board[i + startY][j + startX] = block.shapeMatrix[i][j];
+            if (!this.oldies.includes(this.board[i + startY][j + startX])) {
+              // if this coordinate is not occupied by an existing shape
+              // it can be updated with the the new shape
+              this.board[i + startY][j + startX] = block.shapeMatrix[i][j];
+            }
           }
         }
       }
     }
   }
 
-  isThereRoomToRotate(up, right, down, left) {
+  isThereRoomToRotate(newBlock, up, right, down, left) {
     console.log('limits', up, right, down, left)
     console.log(up > -1, right < this.width - 1 , left > -1)
     console.log(this.toString())
 
-    return up > -1 &&
+    return this.doesNewShapeFitWithOldOnes(newBlock) && up > -1 &&
       right < this.width - 1 &&
       down < this.height - 1 &&
       left > -1
       ? true
       : false;
+  }
+
+  doesNewShapeFitWithOldOnes(newShape) {
+    console.log('uuden funkkarin newShape', newShape)
+    const startY = newShape.cornerY;
+    const startX = newShape.cornerX;
+    const size = newShape.size;
+    
+    for (var i = 0; i < size-1; i++) {
+      for (var j = 0; j < size-1; j++) {
+        const boardPiece = this.board[startY+i][startX +j];
+        const newShapePiece = newShape.shapeMatrix[i][j];
+        if (this.oldies.includes(boardPiece) &&  newShapePiece === newShape.color) {
+          // old shape prevents this rotation
+          return false;
+        }
+      }
+    }  
+    return true;
   }
 
   changeColorForStoppedBlocks() {
