@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { Board } from "../src/Board.mjs";
+import { NewBoard } from "../src/NewBoard.mjs";
 import { Block } from "../src/Block.mjs";
 
 describe("Falling blocks", () => {
   let board;
   beforeEach(() => {
-    board = new Board(3, 3);
+    board = new NewBoard(3, 3);
   });
 
   it("The board starts empty", () => {

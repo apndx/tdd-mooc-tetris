@@ -77,6 +77,8 @@ export class NewBoard {
     switch (color) {
       case "X":
         return 1;
+      case "Y":
+          return 1;  
       default:
         return 4;
     }
@@ -419,7 +421,6 @@ export class NewBoard {
       const startX = block.cornerX;
       const startY = block.cornerY;
       const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
-      const adjustment2 = startY === -1 ? -1 : 0; //after drop upper row of the block is outside the board
       for (var i = 0; i < size; i++) {
         for (var j = 0; j < size; j++) {
           if (i + startY < this.height && j + startX < this.width) {
