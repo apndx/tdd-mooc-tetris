@@ -6,7 +6,7 @@ export class Board {
   board;
   fallingBlock;
   placement;
-  oldies = ['t', 'i', 'o', 'x'];
+  oldies = ["t", "i", "o", "x"];
 
   constructor(width, height) {
     this.width = width;
@@ -88,7 +88,7 @@ export class Board {
   }
 
   getTRightRotationLimits(limits, newBlock) {
-    const newOrientation =  newBlock.orientation;
+    const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
         return { ...limits, down: limits.down - 1, right: limits.right + 1 };
@@ -104,7 +104,7 @@ export class Board {
   }
 
   getTLeftRotationLimits(limits, newBlock) {
-    const newOrientation =  newBlock.orientation;
+    const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
         return { ...limits, down: limits.down - 1, left: limits.left - 1 };
@@ -311,7 +311,7 @@ export class Board {
         }
       }
       // clean the right column
-      for (var k = down; k > up; k--) {
+      for (var k = down; k > up-1; k--) {
         this.board[k][right] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "left");
@@ -330,13 +330,13 @@ export class Board {
       }
     }
     if (stillRoom) {
-      for (var i = down; i > up - 1; i--) {
+      for (var i = down; i > up-1; i--) {
         for (var j = right; j > left - 1; j--) {
           this.board[i][j + 1] = this.board[i][j];
         }
       }
       // clean the left column
-      for (var k = down; k > up; k--) {
+      for (var k = down; k > up-1; k--) {
         this.board[k][left] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "right");
@@ -357,8 +357,8 @@ export class Board {
       const right = newLimits.right;
       const down = newLimits.down;
       const left = newLimits.left;
-          
-      if (this.isThereRoomToRotate(newBlock, up, right, down, left)) {     
+      const room = this.isThereRoomToRotate(newBlock, up, right, down, left);
+      if (room === "all good") {
         this.fallingBlock = new RotatingShape(
           newBlock.shape,
           newBlock.color,
@@ -368,7 +368,12 @@ export class Board {
           newBlock.cornerY
         );
         this.drawBoardAfterRightRotation();
-        console.log(this.toString(), "rotated right board");
+      } else if (room === "wall kick right") {
+        this.move("left");
+        this.rotateFallingRight();
+      } else if (room === "wall kick left") {
+        this.move("right");
+        this.rotateFallingRight();
       }
     }
   }
@@ -384,8 +389,9 @@ export class Board {
       const up = newLimits.up;
       const right = newLimits.right;
       const down = newLimits.down;
-      const left = newLimits.left;      
-      if (this.isThereRoomToRotate(newBlock, up, right, down, left)) {     
+      const left = newLimits.left;
+      const room = this.isThereRoomToRotate(newBlock, up, right, down, left);
+      if (room === "all good") {
         this.fallingBlock = new RotatingShape(
           newBlock.shape,
           newBlock.color,
@@ -395,6 +401,12 @@ export class Board {
           newBlock.cornerY
         );
         this.drawBoardAfterRightRotation();
+      } else if (room === "wall kick right") {
+        this.move("left");
+        this.rotateFallingLeft();
+      } else if (room === "wall kick left") {
+        this.move("right");
+        this.rotateFallingLeft();
       }
     }
   }
@@ -407,7 +419,7 @@ export class Board {
       const startY = block.cornerY;
       for (var i = 0; i < size; i++) {
         for (var j = 0; j < size; j++) {
-          if (i + startY < this.height - 1 && j + startX < this.width - 1) {
+          if (i + startY < this.height && j + startX < this.width) {
             if (!this.oldies.includes(this.board[i + startY][j + startX])) {
               // if this coordinate is not occupied by an existing shape
               // it can be updated with the the new shape
@@ -420,43 +432,64 @@ export class Board {
   }
 
   isThereRoomToRotate(newBlock, up, right, down, left) {
-    console.log('limits', up, right, down, left)
-    console.log(up > -1, right < this.width - 1 , left > -1)
-    console.log(this.toString())
 
-    return this.doesNewShapeFitWithOldOnes(newBlock) && up > -1 &&
-      right < this.width - 1 &&
+    const fitsWithOldShapes = this.doesNewShapeFitWithOldOnes(newBlock);
+    const fitsWell =
+      fitsWithOldShapes &&
+      up > -1 &&
+      right < this.width &&
+      down < this.height &&
+      left > -1;
+    const kicksRightWall =
+      fitsWithOldShapes &&
+      up > -1 &&
+      down < this.height-1 &&
+      right > this.width-1;
+
+    const kicksLeftWall =
+      fitsWithOldShapes &&
+      up > -1 &&
       down < this.height - 1 &&
-      left > -1
-      ? true
-      : false;
+      left < 0;
+
+    if (fitsWell) {
+      return "all good";
+    } else if (kicksLeftWall) {
+      return "wall kick left";
+    } else if (kicksRightWall) {
+      return "wall kick right";
+    }else {
+      return "no room";
+    }
   }
 
   doesNewShapeFitWithOldOnes(newShape) {
-    console.log('uuden funkkarin newShape', newShape)
     const startY = newShape.cornerY;
     const startX = newShape.cornerX;
     const size = newShape.size;
-    
-    for (var i = 0; i < size-1; i++) {
-      for (var j = 0; j < size-1; j++) {
-        const boardPiece = this.board[startY+i][startX +j];
+
+    for (var i = 0; i < size - 1; i++) {
+      for (var j = 0; j < size - 1; j++) {
+        const boardPiece = this.board[startY + i][startX + j];
         const newShapePiece = newShape.shapeMatrix[i][j];
-        if (this.oldies.includes(boardPiece) &&  newShapePiece === newShape.color) {
+        if (
+          this.oldies.includes(boardPiece) &&
+          newShapePiece === newShape.color
+        ) {
           // old shape prevents this rotation
           return false;
         }
       }
-    }  
+    }
     return true;
   }
 
   changeColorForStoppedBlocks() {
     for (var j = 0; j < this.width; j++) {
       for (var i = 0; i < this.height; i++) {
-        this.board[i][j]= this.board[i][j].toLowerCase();
+        this.board[i][j] = this.board[i][j].toLowerCase();
       }
-    }  
+    }
   }
-
 }
+

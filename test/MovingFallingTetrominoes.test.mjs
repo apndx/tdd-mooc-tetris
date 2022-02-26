@@ -1,18 +1,7 @@
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
-
-function tryToMoveOverTheEdge(board, direction) {
-  for (let i = 0; i < 6; i++) {
-    board.move(direction);
-  }
-}
-
-function moveDown(board, times) {
-  for (let i = 0; i < times; i++) {
-    board.move("down");
-  }
-}
+import { tryToMoveOverTheEdge, moveDown } from "./Helpers.mjs";
 
 describe("A falling tetrominoe", () => {
   let board;
