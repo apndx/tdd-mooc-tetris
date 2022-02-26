@@ -78,11 +78,11 @@ describe("Falling I-Shape", () => {
 describe("Falling O-Shape", () => {
   let board;
   beforeEach(() => {
-    board = new Board(10, 6);
+    board = new NewBoard(10, 6);
   });
 
   it("cannot be rotated right/clockwise", () => {
-    const shape = Tetromino.O_SHAPE;
+    const shape = Tetromino.O_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
@@ -96,7 +96,7 @@ describe("Falling O-Shape", () => {
   });
 
   it("cannot be rotated left/counter-clockwise", () => {
-    const shape = Tetromino.O_SHAPE;
+    const shape = Tetromino.O_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
@@ -125,7 +125,6 @@ describe("Rotating T-Shape", () => {
     board.tick();
     board.tick();
     board.rotateFallingRight();
-    console.log(board.toString());
     expect(board.toString()).to.equalShape(
       `..........
        ..........

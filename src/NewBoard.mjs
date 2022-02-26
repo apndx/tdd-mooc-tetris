@@ -1,5 +1,5 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
-
+import { Tetromino } from "../src/Tetromino.mjs";
 export class NewBoard {
   width;
   height;
@@ -43,7 +43,6 @@ export class NewBoard {
           block.limits
         );
         var blockStart = Math.ceil(this.placement - size / 2)+1;
-        console.log('blockstart', blockStart)
         for (var i = 0; i < size-1; i++) {
           for (var j = 0; j < size; j++) {
             this.board[i][blockStart] = block.shapeMatrix[i+1][j];
