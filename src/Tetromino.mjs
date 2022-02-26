@@ -22,12 +22,17 @@ export class Tetromino {
     left: 0,
   });
 
-  static T_SHAPE_NEW = new HardCodedRotatingShape("....\nTTT.\n.T..\n....\n", "T", "down", {
-    up: 0,
-    right: 1,
-    down: 1,
-    left: -1,
-  });
+  static T_SHAPE_NEW = new HardCodedRotatingShape(
+    "....\nTTT.\n.T..\n....\n",
+    "T",
+    "down",
+    {
+      up: 0,
+      right: 1,
+      down: 1,
+      left: -1,
+    }
+  );
 
   static I_SHAPE_NEW = new HardCodedRotatingShape(
     `....\nIIII\n....\n....\n`,
@@ -35,5 +40,4 @@ export class Tetromino {
     "left",
     { up: 0, right: 2, down: 0, left: -1 }
   );
-
 }

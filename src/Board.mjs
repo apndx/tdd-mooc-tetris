@@ -51,6 +51,7 @@ export class Board {
           blockStart = Math.ceil(this.placement - size / 2);
         }
         const cornerX = Math.ceil(this.placement - size / 2);
+        console.log('cornerX', cornerX)
         const cornerY = 0;
         const limits = block.limits;
         const newLimits = {
@@ -311,7 +312,7 @@ export class Board {
         }
       }
       // clean the right column
-      for (var k = down; k > up-1; k--) {
+      for (var k = down; k > up - 1; k--) {
         this.board[k][right] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "left");
@@ -330,13 +331,13 @@ export class Board {
       }
     }
     if (stillRoom) {
-      for (var i = down; i > up-1; i--) {
+      for (var i = down; i > up - 1; i--) {
         for (var j = right; j > left - 1; j--) {
           this.board[i][j + 1] = this.board[i][j];
         }
       }
       // clean the left column
-      for (var k = down; k > up-1; k--) {
+      for (var k = down; k > up - 1; k--) {
         this.board[k][left] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "right");
@@ -432,7 +433,6 @@ export class Board {
   }
 
   isThereRoomToRotate(newBlock, up, right, down, left) {
-
     const fitsWithOldShapes = this.doesNewShapeFitWithOldOnes(newBlock);
     const fitsWell =
       fitsWithOldShapes &&
@@ -443,14 +443,11 @@ export class Board {
     const kicksRightWall =
       fitsWithOldShapes &&
       up > -1 &&
-      down < this.height-1 &&
-      right > this.width-1;
+      down < this.height - 1 &&
+      right > this.width - 1;
 
     const kicksLeftWall =
-      fitsWithOldShapes &&
-      up > -1 &&
-      down < this.height - 1 &&
-      left < 0;
+      fitsWithOldShapes && up > -1 && down < this.height - 1 && left < 0;
 
     if (fitsWell) {
       return "all good";
@@ -458,7 +455,7 @@ export class Board {
       return "wall kick left";
     } else if (kicksRightWall) {
       return "wall kick right";
-    }else {
+    } else {
       return "no room";
     }
   }
@@ -492,4 +489,3 @@ export class Board {
     }
   }
 }
-

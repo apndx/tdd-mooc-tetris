@@ -80,18 +80,57 @@ export class HardCodedRotatingShape {
       return this;
     } else if (typeof this.color !== "undefined" && this.color === "I") {
       return this.rotateRightI();
+    } else if (typeof this.color !== "undefined" && this.color === "T") {
+      return this.rotateT("right");
     } else {
-      var transposeMatrix = _.zip(...this.shapeMatrix);
-      var rotatedRight = transposeMatrix.map((row) => row.reverse());
-      var rotatedString = this.printRotated(rotatedRight);
-      return new RotatingShape(
-        rotatedString,
-        this.color,
-        this.getNextOrientationRight(),
-        this.limits,
-        this.cornerX,
-        this.cornerY
-      );
+    }
+  }
+
+  rotateT(direction) {
+    const orientation = direction === 'right' ? this.getNextOrientationRight() : this.getNextOrientationLeft();
+    const defaultT = new HardCodedRotatingShape(
+      "....\nTTT.\n.T..\n....\n",
+      "T",
+      "down",
+      {
+        up: 0,
+        right: 1,
+        down: 1,
+        left: -1,
+      }
+    );
+    switch (orientation) {
+      case "up":
+        return new HardCodedRotatingShape(
+          "....\n.T..\nTTT.\n....\n",
+          "T",
+          "up",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "left":
+        return new HardCodedRotatingShape(
+          ".T..\nTT..\n.T..\n....\n",
+          "T",
+          "left",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "right":
+        return new HardCodedRotatingShape(
+          ".T..\n.TT.\n.T..\n....\n",
+          "T",
+          "right",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "down":
+        return defaultT;
+      default:
+        return defaultT;
     }
   }
 
@@ -127,11 +166,13 @@ export class HardCodedRotatingShape {
       return this;
     } else if (typeof this.color !== "undefined" && this.color === "I") {
       return this.rotateLeftI();
+    } else if (typeof this.color !== "undefined" && this.color === "T") {
+      return this.rotateT("left");      
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedLeft = transposeMatrix.reverse();
       var rotatedString = this.printRotated(rotatedLeft);
-      return new RotatingShape(
+      return new HardCodedRotatingShape(
         rotatedString,
         this.color,
         this.getNextOrientationLeft(),
@@ -186,8 +227,4 @@ export class HardCodedRotatingShape {
     }
     return matrixString;
   }
-
-
-
 }
-

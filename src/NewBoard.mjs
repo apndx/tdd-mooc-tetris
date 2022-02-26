@@ -1,4 +1,3 @@
-import { RotatingShape } from "./RotatingShape.mjs";
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
 
 export class NewBoard {
@@ -43,16 +42,17 @@ export class NewBoard {
           block.orientation,
           block.limits
         );
-        var blockStart = Math.ceil(this.placement - size / 2);
-        for (var i = 0; i < size; i++) {
+        var blockStart = Math.ceil(this.placement - size / 2)+1;
+        console.log('blockstart', blockStart)
+        for (var i = 0; i < size-1; i++) {
           for (var j = 0; j < size; j++) {
-            this.board[i][blockStart] = block.shapeMatrix[i][j];
+            this.board[i][blockStart] = block.shapeMatrix[i+1][j];
             blockStart += 1;
           }
-          blockStart = Math.ceil(this.placement - size / 2);
+          blockStart = Math.ceil(this.placement - size / 2) +1;
         }
-        const cornerX = Math.ceil(this.placement - size / 2);
-        const cornerY = 0;
+        const cornerX = Math.ceil(this.placement - size / 2)+1;
+        const cornerY = -1;
         const limits = block.limits;
         const newLimits = {
           ...limits,
@@ -306,7 +306,7 @@ export class NewBoard {
         }
       }
       // clean the right column
-      for (var k = down; k > up-1; k--) {
+      for (var k = down; k > up - 1; k--) {
         this.board[k][right] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "left");
@@ -325,13 +325,13 @@ export class NewBoard {
       }
     }
     if (stillRoom) {
-      for (var i = down; i > up-1; i--) {
+      for (var i = down; i > up - 1; i--) {
         for (var j = right; j > left - 1; j--) {
           this.board[i][j + 1] = this.board[i][j];
         }
       }
       // clean the left column
-      for (var k = down; k > up-1; k--) {
+      for (var k = down; k > up - 1; k--) {
         this.board[k][left] = ".";
       }
       this.updateBlockLimitsMovingHorizontal(this.fallingBlock, "right");
@@ -369,6 +369,9 @@ export class NewBoard {
       } else if (room === "wall kick left") {
         this.move("right");
         this.rotateFallingRight();
+      } else if (room === "wall kick down") {
+        this.tick();
+        this.rotateFallingRight();
       }
     }
   }
@@ -402,6 +405,9 @@ export class NewBoard {
       } else if (room === "wall kick left") {
         this.move("right");
         this.rotateFallingLeft();
+      } else if (room === "wall kick down") {
+        this.tick();
+        this.rotateFallingLeft();
       }
     }
   }
@@ -412,13 +418,15 @@ export class NewBoard {
       const size = block.size;
       const startX = block.cornerX;
       const startY = block.cornerY;
+      const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
+      const adjustment2 = startY === -1 ? -1 : 0; //after drop upper row of the block is outside the board
       for (var i = 0; i < size; i++) {
         for (var j = 0; j < size; j++) {
           if (i + startY < this.height && j + startX < this.width) {
-            if (!this.oldies.includes(this.board[i + startY][j + startX])) {
+            if (!this.oldies.includes(this.board[i + startY + adjustment1][j + startX])) {
               // if this coordinate is not occupied by an existing shape
               // it can be updated with the the new shape
-              this.board[i + startY][j + startX] = block.shapeMatrix[i][j];
+              this.board[i + startY + adjustment1][j + startX] = block.shapeMatrix[i][j];
             }
           }
         }
@@ -427,25 +435,25 @@ export class NewBoard {
   }
 
   isThereRoomToRotate(newBlock, up, right, down, left) {
-
     const fitsWithOldShapes = this.doesNewShapeFitWithOldOnes(newBlock);
+
     const fitsWell =
       fitsWithOldShapes &&
       up > -1 &&
       right < this.width &&
       down < this.height &&
       left > -1;
-    const kicksRightWall =
-      fitsWithOldShapes &&
-      up > -1 &&
-      down < this.height-1 &&
-      right > this.width-1;
-
-    const kicksLeftWall =
+    
+      const kicksRightWall =
       fitsWithOldShapes &&
       up > -1 &&
       down < this.height - 1 &&
-      left < 0;
+      right > this.width - 1;
+    
+      const kicksLeftWall =
+      fitsWithOldShapes && up > -1 && down < this.height - 1 && left < 0;
+
+      const tooFarUp = fitsWithOldShapes && left > -1 && right < this.width && up < 0;
 
     if (fitsWell) {
       return "all good";
@@ -453,7 +461,9 @@ export class NewBoard {
       return "wall kick left";
     } else if (kicksRightWall) {
       return "wall kick right";
-    }else {
+    } else if (tooFarUp) {
+      return "wall kick down";
+    } else {
       return "no room";
     }
   }
@@ -462,11 +472,12 @@ export class NewBoard {
     const startY = newShape.cornerY;
     const startX = newShape.cornerX;
     const size = newShape.size;
+    const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
 
     for (var i = 0; i < size - 1; i++) {
       for (var j = 0; j < size - 1; j++) {
-        const boardPiece = this.board[startY + i][startX + j];
-        const newShapePiece = newShape.shapeMatrix[i][j];
+        const boardPiece = this.board[startY + i + adjustment1][startX + j];
+        const newShapePiece = newShape.shapeMatrix[i + adjustment1][j];
         if (
           this.oldies.includes(boardPiece) &&
           newShapePiece === newShape.color
@@ -478,6 +489,9 @@ export class NewBoard {
     }
     return true;
   }
+
+
+
 
   changeColorForStoppedBlocks() {
     for (var j = 0; j < this.width; j++) {
