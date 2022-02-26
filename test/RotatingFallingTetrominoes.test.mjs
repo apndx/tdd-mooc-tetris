@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
+import { NewBoard } from "../src/NewBoard.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 import { fallToBottom } from "./Helpers.mjs";
 import { tryToMoveOverTheEdge } from "./Helpers.mjs";
@@ -42,11 +43,11 @@ describe("Falling T-Shape", () => {
 describe("Falling I-Shape", () => {
   let board;
   beforeEach(() => {
-    board = new Board(10, 6);
+    board = new NewBoard(10, 6);
   });
 
   it("can be rotated right/clockwise", () => {
-    const shape = Tetromino.I_SHAPE;
+    const shape = Tetromino.I_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
@@ -60,7 +61,7 @@ describe("Falling I-Shape", () => {
   });
 
   it("can be rotated left/counter-clockwise", () => {
-    const shape = Tetromino.I_SHAPE;
+    const shape = Tetromino.I_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingLeft();
     expect(board.toString()).to.equalShape(
