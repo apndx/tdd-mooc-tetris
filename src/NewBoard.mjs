@@ -1,5 +1,6 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
+import { fallToBottom } from "../test/Helpers.mjs";
 export class NewBoard {
   width;
   height;
@@ -87,9 +88,9 @@ export class NewBoard {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
-        return { ...limits, down: limits.down - 1, right: limits.right + 1 };
+        return { ...limits, up: limits.up + 1, right: limits.right + 1 };
       case "right":
-        return { ...limits, left: limits.left + 1, down: limits.down + 1 };
+        return { ...limits, left: limits.left + 1, up: limits.up - 1 };
       case "down":
         return { ...limits, up: limits.up + 1, left: limits.left - 1 };
       case "left":
@@ -103,13 +104,13 @@ export class NewBoard {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
-        return { ...limits, down: limits.down - 1, left: limits.left - 1 };
+        return { ...limits, up: limits.up + 1, left: limits.left - 1 };
       case "right":
-        return { ...limits, left: limits.left + 1, down: limits.down + 1 };
+        return { ...limits, left: limits.left + 1, up: limits.up - 1 };
       case "down":
-        return { ...limits, up: limits.up + 1, right: limits.right + 1 };
+        return { ...limits, up: limits.up + 1, right: limits.right - 1 };
       case "left":
-        return { ...limits, down: limits.down + 1, right: limits.right - 1 };
+        return { ...limits, up: limits.up - 1, right: limits.right - 1 };
       default:
         return limits;
     }
@@ -182,16 +183,27 @@ export class NewBoard {
     var right = this.fallingBlock.limits.right;
     var down = this.fallingBlock.limits.down;
     var left = this.fallingBlock.limits.left;
-    for (var i = left; i < right + 1; i++) {
-      if (!(down < this.height - 1 && this.isThereSpaceBelow(down, i))) {
-        this.fallingBlock = null;
-        this.changeColorForStoppedBlocks();
-        break;
+    if (down >= this.height - 1) {
+      this.fallingBlock = null;
+      this.changeColorForStoppedBlocks();
+    } else {
+      var hasRoom = true;
+      for (var i = left; i < right + 1; i++) {
+        if (this.board[down][i] !== '.')  {
+          if (!this.isThereSpaceBelow(down, i)) {
+            hasRoom = false;
+            this.fallingBlock = null;
+            this.changeColorForStoppedBlocks();
+            break;
+          }
+        }
+      }
+      if (hasRoom) {
+        this.moveBlockDown(this.fallingBlock);
+        this.updateFallingBlockLimits(this.fallingBlock);
       }
     }
-    this.moveBlockDown(this.fallingBlock);
-    this.updateFallingBlockLimits(this.fallingBlock);
-  }
+  }  
 
   moveBlockDown(block) {
     if (block !== null) {
@@ -202,7 +214,9 @@ export class NewBoard {
 
       for (var i = down; i > up - 1; i--) {
         for (var j = left; j < right + 1; j++) {
-          this.board[i + 1][j] = this.board[i][j];
+          if (!this.oldies.includes(this.board[i + 1][j])) { // do not overwrite old blocks
+            this.board[i + 1][j] = this.board[i][j];
+          }
         }
       }
       // clean the previous row
@@ -473,7 +487,6 @@ export class NewBoard {
     const startX = newShape.cornerX;
     const size = newShape.size;
     const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
-
     for (var i = 0; i < size - 1; i++) {
       for (var j = 0; j < size - 1; j++) {
         const boardPiece = this.board[startY + i + adjustment1][startX + j];
@@ -489,9 +502,6 @@ export class NewBoard {
     }
     return true;
   }
-
-
-
 
   changeColorForStoppedBlocks() {
     for (var j = 0; j < this.width; j++) {

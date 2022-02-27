@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { Board } from "../src/Board.mjs";
 import { NewBoard } from "../src/NewBoard.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 import { fallToBottom } from "./Helpers.mjs";
@@ -111,20 +110,23 @@ describe("Falling O-Shape", () => {
 });
 
 describe("Rotating T-Shape", () => {
-  let board;
-  beforeEach(() => {
-    board = new Board(10, 6);
-  });
+  const board = new NewBoard(10, 6);
 
   it("should not effect existing shapes", () => {
-    const shape = Tetromino.T_SHAPE;
+    // rotate first T 180 and drop down
+    // rotate second T to left, move left and drop down
+
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
+    board.rotateFallingRight();
+    board.rotateFallingRight();
     fallToBottom(board);
+    
     board.drop(shape);
+    board.rotateFallingLeft();
     board.move("left");
     board.tick();
     board.tick();
-    board.rotateFallingRight();
     expect(board.toString()).to.equalShape(
       `..........
        ..........
@@ -139,20 +141,20 @@ describe("Rotating T-Shape", () => {
 describe("Falling T-Shape", () => {
   let board;
   beforeEach(() => {
-    board = new Board(10, 6);
+    board = new NewBoard(10, 6);
   });
 
   it("gets a wall kick if rotated too near the right wall", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingLeft();
     tryToMoveOverTheEdge(board, "right");
     board.rotateFallingRight();
 
     expect(board.toString()).to.equalShape(
-      `........T.
+      `..........
        .......TTT
-       ..........
+       ........T.
        ..........
        ..........
        ..........`
@@ -160,16 +162,16 @@ describe("Falling T-Shape", () => {
   });
 
   it("gets a wall kick if rotated too near the left wall", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     board.rotateFallingRight();
     tryToMoveOverTheEdge(board, "left");
     board.rotateFallingLeft();
 
     expect(board.toString()).to.equalShape(
-      `.T........
+      `..........
        TTT.......
-       ..........
+       .T........
        ..........
        ..........
        ..........`

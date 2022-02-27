@@ -145,6 +145,7 @@ export class Board {
   }
 
   tick() {
+    console.log(this.hasFalling())
     if (this.hasFalling()) {
       var size = this.getBlockSize(this.fallingBlock.color);
       if (size === 1) {

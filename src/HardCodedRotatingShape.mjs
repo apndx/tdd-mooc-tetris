@@ -92,12 +92,9 @@ export class HardCodedRotatingShape {
       "....\nTTT.\n.T..\n....\n",
       "T",
       "down",
-      {
-        up: 0,
-        right: 1,
-        down: 1,
-        left: -1,
-      }
+      this.limits,
+      this.cornerX,
+      this.cornerY
     );
     switch (orientation) {
       case "up":
