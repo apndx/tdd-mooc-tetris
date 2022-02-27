@@ -1,21 +1,21 @@
 import { expect } from "chai";
-import { Board } from "../src/Board.mjs";
+import { NewBoard } from "../src/NewBoard.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 import { tryToMoveOverTheEdge, moveDown } from "./Helpers.mjs";
 
 describe("A falling tetrominoe", () => {
   let board;
   beforeEach(() => {
-    board = new Board(10, 6);
+    board = new NewBoard(10, 6);
   });
 
   it("can be moved left", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     board.move("left");
     expect(board.toString()).to.equalShape(
-      `...T......
-       ..TTT.....
+      `..TTT.....
+       ...T......
        ..........
        ..........
        ..........
@@ -24,12 +24,12 @@ describe("A falling tetrominoe", () => {
   });
 
   it("can be moved right", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     board.move("right");
     expect(board.toString()).to.equalShape(
-      `.....T....
-       ....TTT...
+      `....TTT...
+       .....T....
        ..........
        ..........
        ..........
@@ -38,13 +38,13 @@ describe("A falling tetrominoe", () => {
   });
 
   it("can be moved down", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     board.move("down");
     expect(board.toString()).to.equalShape(
       `..........
-       ....T.....
        ...TTT....
+       ....T.....
        ..........
        ..........
        ..........`
@@ -52,12 +52,12 @@ describe("A falling tetrominoe", () => {
   });
 
   it("cannot be moved left beyond the board", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     tryToMoveOverTheEdge(board, "left");
     expect(board.toString()).to.equalShape(
-      `.T........
-       TTT.......
+      `TTT.......
+       .T........
        ..........
        ..........
        ..........
@@ -66,12 +66,12 @@ describe("A falling tetrominoe", () => {
   });
 
   it("cannot be moved right beyond the board", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     tryToMoveOverTheEdge(board, "right");
     expect(board.toString()).to.equalShape(
-      `........T.
-       .......TTT
+      `.......TTT
+       ........T.
        ..........
        ..........
        ..........
@@ -80,7 +80,7 @@ describe("A falling tetrominoe", () => {
   });
 
   it("cannot be moved down beyond the board", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     moveDown(board, 6);
     expect(board.toString()).to.equalShape(
@@ -88,13 +88,13 @@ describe("A falling tetrominoe", () => {
        ..........
        ..........
        ..........
-       ....t.....
-       ...ttt....`
+       ...ttt....
+       ....t.....`
     );
   });
 
   it("cannot be moved left through other blocks", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     tryToMoveOverTheEdge(board, "left");
     moveDown(board, 6);
@@ -106,13 +106,13 @@ describe("A falling tetrominoe", () => {
        ..........
        ..........
        ..........
-       .t..T.....
-       tttTTT....`
+       tttTTT....
+       .t..T.....`
     );
   });
 
   it("cannot be moved right through other blocks", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     tryToMoveOverTheEdge(board, "right");
     moveDown(board, 6);
@@ -124,13 +124,13 @@ describe("A falling tetrominoe", () => {
        ..........
        ..........
        ..........
-       .....T..t.
-       ....TTTttt`
+       ....TTTttt
+       .....T..t.`
     );
   });
 
   it("cannot be moved down through other blocks", () => {
-    const shape = Tetromino.T_SHAPE;
+    const shape = Tetromino.T_SHAPE_NEW;
     board.drop(shape);
     moveDown(board, 6);
     board.drop(shape);
@@ -138,10 +138,10 @@ describe("A falling tetrominoe", () => {
     expect(board.toString()).to.equalShape(
       `..........
        ..........
-       ....t.....
        ...ttt....
        ....t.....
-       ...ttt....`
+       ...ttt....
+       ....t.....`
     );
   });
 });
