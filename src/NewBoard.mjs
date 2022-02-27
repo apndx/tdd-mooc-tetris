@@ -1,13 +1,12 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
-import { Tetromino } from "../src/Tetromino.mjs";
-import { fallToBottom } from "../test/Helpers.mjs";
+import { Tetromino } from "./Tetromino.mjs";
 export class NewBoard {
   width;
   height;
   board;
   fallingBlock;
   placement;
-  oldies = ["t", "i", "o", "x"];
+  oldies = ["t", "i", "o", "x", "l", "y"];
 
   constructor(width, height) {
     this.width = width;
@@ -84,7 +83,7 @@ export class NewBoard {
     }
   }
 
-  getLTRightRotationLimits(limits, newBlock) {
+  getJLTRightRotationLimits(limits, newBlock) {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
@@ -100,7 +99,7 @@ export class NewBoard {
     }
   }
 
-  getLTLeftRotationLimits(limits, newBlock) {
+  getJLTLeftRotationLimits(limits, newBlock) {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
@@ -425,12 +424,16 @@ export class NewBoard {
     switch (color) {
       case "T":
         return direction === "left"
-          ? this.getLTLeftRotationLimits(oldLimits, newBlock)
-          : this.getLTRightRotationLimits(oldLimits, newBlock);
+          ? this.getJLTLeftRotationLimits(oldLimits, newBlock)
+          : this.getJLTRightRotationLimits(oldLimits, newBlock);
       case "L":
         return direction === "left"
-          ? this.getLTLeftRotationLimits(oldLimits, newBlock)
-          : this.getLTRightRotationLimits(oldLimits, newBlock);
+          ? this.getJLTLeftRotationLimits(oldLimits, newBlock)
+          : this.getJLTRightRotationLimits(oldLimits, newBlock);
+      case "J":
+        return direction === "left"
+          ? this.getJLTLeftRotationLimits(oldLimits, newBlock)
+          : this.getJLTRightRotationLimits(oldLimits, newBlock);   
       case "I":
         return this.getIRotationLimits(oldLimits, newBlock);
       default:

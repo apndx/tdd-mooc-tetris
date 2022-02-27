@@ -80,108 +80,92 @@ export class HardCodedRotatingShape {
       return this;
     } else if (typeof this.color !== "undefined" && this.color === "I") {
       return this.rotateRightI();
-    } else if (typeof this.color !== "undefined" && this.color === "T") {
-      return this.rotateT("right");
-    } else if (typeof this.color !== "undefined" && this.color === "L") {
-      return this.rotateL("right");
     } else {
+      return this.rotate("right");
+    }
+  }
+
+  rotateLeft() {
+    if (typeof this.color !== "undefined" && this.color === "O") {
       return this;
+    } else if (typeof this.color !== "undefined" && this.color === "I") {
+      return this.rotateLeftI();
+    } else {
+      return this.rotate("left");
     }
   }
 
-  rotateT(direction) {
+  rotate(direction) {
     const orientation =
-      direction === "right"
-        ? this.getNextOrientationRight()
-        : this.getNextOrientationLeft();
-    const defaultT = new HardCodedRotatingShape(
-      "....\nTTT.\n.T..\n....\n",
-      "T",
-      "down",
+    direction === "right"
+      ? this.getNextOrientationRight()
+      : this.getNextOrientationLeft();
+    var shapeString = this.getStrings(orientation, this.color);
+    return new HardCodedRotatingShape(
+      shapeString,
+      this.color,
+      orientation,
       this.limits,
       this.cornerX,
       this.cornerY
-    );
-    switch (orientation) {
-      case "up":
-        return new HardCodedRotatingShape(
-          "....\n.T..\nTTT.\n....\n",
-          "T",
-          "up",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
-      case "left":
-        return new HardCodedRotatingShape(
-          ".T..\nTT..\n.T..\n....\n",
-          "T",
-          "left",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
-      case "right":
-        return new HardCodedRotatingShape(
-          ".T..\n.TT.\n.T..\n....\n",
-          "T",
-          "right",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
-      case "down":
-        return defaultT;
+    ); 
+  }
+
+  getStrings(orientation, color) {
+    switch (color) {
+      case "L":
+        return this.getLStrings(orientation);
+      case "T":
+        return this.getTStrings(orientation);
+      case "J":
+        return this.getJStrings(orientation);
       default:
-        return defaultT;
+        return this.getTStrings(orientation);
     }
   }
 
-  rotateL(direction) {
-    const orientation =
-      direction === "right"
-        ? this.getNextOrientationRight()
-        : this.getNextOrientationLeft();
-    const defaultL = new HardCodedRotatingShape(
-      `....\nLLL.\nL...\n....\n`,
-      "L",
-      "down",
-      this.limits,
-      this.cornerX,
-      this.cornerY
-    );
+  getTStrings(orientation) {
     switch (orientation) {
       case "up":
-        return new HardCodedRotatingShape(
-          "....\n..L.\nLLL.\n....\n",
-          "L",
-          "up",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
+        return  `....\n.T..\nTTT.\n....\n`;
       case "left":
-        return new HardCodedRotatingShape(
-          "LL..\n.L..\n.L..\n....\n",
-          "L",
-          "left",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
-      case "right":
-        return new HardCodedRotatingShape(
-          ".L..\n.L..\n.LL.\n....\n",
-          "L",
-          "right",
-          this.limits,
-          this.cornerX,
-          this.cornerY
-        );
+        return  `.T..\nTT..\n.T..\n....\n`;
       case "down":
-        return defaultL;
+          return `....\nTTT.\n.T..\n....\n`;
+      case "right":
+        return  `.T..\n.TT.\n.T..\n....\n`;
       default:
-        return defaultL;
+        return `....\nTTT.\n.T..\n....\n`;
+    }
+  }
+
+  getLStrings(orientation) {
+    switch (orientation) {
+      case "up":
+        return  `....\n..L.\nLLL.\n....\n`;
+      case "left":
+        return  `LL..\n.L..\n.L..\n....\n`;
+      case "down":
+          return `....\nLLL.\nL...\n....\n`;
+      case "right":
+        return  `.L..\n.L..\n.LL.\n....\n`;
+      default:
+        return `....\nLLL.\nL...\n....\n`;
+    }
+  }
+
+  getJStrings(orientation) {
+    switch (orientation) {
+      case "up":
+        return  `....\nJ...\nJJJ.\n....\n`;
+      case "left":
+        return  `.J..\n.J..\nJJ..\n....\n`;
+      case "down":
+          return `....\nJJJ.\n..J.\n....\n`;
+      case "right":
+        return  `.JJ.\n.J..\n.J..\n....\n`;
+      default:
+        return `....\nJJJ.\n..J.\n....\n`;
     }
   }
 
@@ -209,20 +193,6 @@ export class HardCodedRotatingShape {
         this.cornerX,
         this.cornerY
       );
-    }
-  }
-
-  rotateLeft() {
-    if (typeof this.color !== "undefined" && this.color === "O") {
-      return this;
-    } else if (typeof this.color !== "undefined" && this.color === "I") {
-      return this.rotateLeftI();
-    } else if (typeof this.color !== "undefined" && this.color === "T") {
-      return this.rotateT("left");
-    } else if (typeof this.color !== "undefined" && this.color === "L") {
-      return this.rotateL("left");
-    } else {
-      return this;
     }
   }
 
