@@ -125,7 +125,23 @@ export class NewBoard {
       case "down":
         return { ...limits, up: limits.up - 1, right: limits.right - 1 };
       case "right":
-        return { ...limits, up: limits.up + 1, right: limits.right - 1 };  
+        return { ...limits, up: limits.up + 1, right: limits.right - 1 };
+      default:
+        return limits;
+    }
+  }
+
+  getZRotationLimits(limits, newBlock) {
+    const newOrientation = newBlock.orientation;
+    switch (newOrientation) {
+      case "up":
+        return { ...limits, up: limits.up - 1, left: limits.left + 1 };
+      case "left":
+        return { ...limits, up: limits.up + 1, left: limits.left - 1 };
+      case "down":
+        return { ...limits, up: limits.up - 1, left: limits.left + 1 };
+      case "right":
+        return { ...limits, up: limits.up + 1, left: limits.left - 1 };
       default:
         return limits;
     }
@@ -449,11 +465,13 @@ export class NewBoard {
       case "J":
         return direction === "left"
           ? this.getJLTLeftRotationLimits(oldLimits, newBlock)
-          : this.getJLTRightRotationLimits(oldLimits, newBlock);   
+          : this.getJLTRightRotationLimits(oldLimits, newBlock);
       case "I":
         return this.getIRotationLimits(oldLimits, newBlock);
       case "S":
-          return this.getSRotationLimits(oldLimits, newBlock);  
+        return this.getSRotationLimits(oldLimits, newBlock);
+      case "Z":
+        return this.getZRotationLimits(oldLimits, newBlock);  
       default:
         return oldLimits;
     }

@@ -97,9 +97,9 @@ export class HardCodedRotatingShape {
 
   rotate(direction) {
     const orientation =
-    direction === "right"
-      ? this.getNextOrientationRight()
-      : this.getNextOrientationLeft();
+      direction === "right"
+        ? this.getNextOrientationRight()
+        : this.getNextOrientationLeft();
     var shapeString = this.getStrings(orientation, this.color);
     return new HardCodedRotatingShape(
       shapeString,
@@ -108,7 +108,7 @@ export class HardCodedRotatingShape {
       this.limits,
       this.cornerX,
       this.cornerY
-    ); 
+    );
   }
 
   getStrings(orientation, color) {
@@ -120,22 +120,39 @@ export class HardCodedRotatingShape {
       case "J":
         return this.getJStrings(orientation);
       case "S":
-          return this.getSStrings(orientation);
+        return this.getSStrings(orientation);
+      case "Z":
+        return this.getZStrings(orientation);
       default:
         return this.getTStrings(orientation);
+    }
+  }
+
+  getZStrings(orientation) {
+    switch (orientation) {
+      case "up":
+        return `..Z.\n.ZZ.\n.Z..\n....\n`;
+      case "left":
+        return `....\nZZ..\n.ZZ.\n....\n`;
+      case "down":
+        return `..Z.\n.ZZ.\n.Z..\n....\n`;
+      case "right":
+        return `....\nZZ..\n.ZZ.\n....\n`;
+      default:
+        return `....\nZZ..\n.ZZ.\n....\n`;
     }
   }
 
   getSStrings(orientation) {
     switch (orientation) {
       case "up":
-        return  `S...\nSS..\n.S..\n....\n`;
+        return `S...\nSS..\n.S..\n....\n`;
       case "left":
-        return  `....\n.SS.\nSS..\n....\n`;
+        return `....\n.SS.\nSS..\n....\n`;
       case "down":
-          return  `S...\nSS..\n.S..\n....\n`;
+        return `S...\nSS..\n.S..\n....\n`;
       case "right":
-            return  `....\n.SS.\nSS..\n....\n`;    
+        return `....\n.SS.\nSS..\n....\n`;
       default:
         return `....\n.SS.\nSS..\n....\n`;
     }
@@ -144,13 +161,13 @@ export class HardCodedRotatingShape {
   getTStrings(orientation) {
     switch (orientation) {
       case "up":
-        return  `....\n.T..\nTTT.\n....\n`;
+        return `....\n.T..\nTTT.\n....\n`;
       case "left":
-        return  `.T..\nTT..\n.T..\n....\n`;
+        return `.T..\nTT..\n.T..\n....\n`;
       case "down":
-          return `....\nTTT.\n.T..\n....\n`;
+        return `....\nTTT.\n.T..\n....\n`;
       case "right":
-        return  `.T..\n.TT.\n.T..\n....\n`;
+        return `.T..\n.TT.\n.T..\n....\n`;
       default:
         return `....\nTTT.\n.T..\n....\n`;
     }
@@ -159,13 +176,13 @@ export class HardCodedRotatingShape {
   getLStrings(orientation) {
     switch (orientation) {
       case "up":
-        return  `....\n..L.\nLLL.\n....\n`;
+        return `....\n..L.\nLLL.\n....\n`;
       case "left":
-        return  `LL..\n.L..\n.L..\n....\n`;
+        return `LL..\n.L..\n.L..\n....\n`;
       case "down":
-          return `....\nLLL.\nL...\n....\n`;
+        return `....\nLLL.\nL...\n....\n`;
       case "right":
-        return  `.L..\n.L..\n.LL.\n....\n`;
+        return `.L..\n.L..\n.LL.\n....\n`;
       default:
         return `....\nLLL.\nL...\n....\n`;
     }
@@ -174,13 +191,13 @@ export class HardCodedRotatingShape {
   getJStrings(orientation) {
     switch (orientation) {
       case "up":
-        return  `....\nJ...\nJJJ.\n....\n`;
+        return `....\nJ...\nJJJ.\n....\n`;
       case "left":
-        return  `.J..\n.J..\nJJ..\n....\n`;
+        return `.J..\n.J..\nJJ..\n....\n`;
       case "down":
-          return `....\nJJJ.\n..J.\n....\n`;
+        return `....\nJJJ.\n..J.\n....\n`;
       case "right":
-        return  `.JJ.\n.J..\n.J..\n....\n`;
+        return `.JJ.\n.J..\n.J..\n....\n`;
       default:
         return `....\nJJJ.\n..J.\n....\n`;
     }

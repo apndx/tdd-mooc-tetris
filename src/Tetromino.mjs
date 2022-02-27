@@ -44,4 +44,11 @@ export class Tetromino {
     "left",
     { up: 0, right: 1, down: 1, left: -1 }
   );
+
+  static Z_SHAPE_NEW = new HardCodedRotatingShape(
+    `....\nZZ..\n.ZZ.\n....\n`,
+    "Z",
+    "left",
+    { up: 0, right: 1, down: 1, left: -1 }
+  );
 }

@@ -250,3 +250,38 @@ describe("The S-Shape", () => {
     expect(distinctOrientations(shape).size).to.equal(2);
   });
 });
+
+describe("The Z-Shape", () => {
+  const shape = Tetromino.Z_SHAPE_NEW;
+
+  it("initial orientation", () => {
+    expect(shape.toString()).to.equalShape(
+      `....
+       ZZ..
+       .ZZ.
+       ....`
+    );
+  });
+
+  it("can be rotated right/clockwise", () => {
+    expect(shape.rotateRight().toString()).to.equalShape(
+      `..Z.
+       .ZZ.
+       .Z..
+       ....`
+    );
+  });
+
+  it("can be rotated left/counter-clockwise", () => {
+    expect(shape.rotateLeft().toString()).to.equalShape(
+      `..Z.
+       .ZZ.
+       .Z..
+       ....`
+    );
+  });
+
+  it("has 2 distinct orientations", () => {
+    expect(distinctOrientations(shape).size).to.equal(2);
+  });
+});
