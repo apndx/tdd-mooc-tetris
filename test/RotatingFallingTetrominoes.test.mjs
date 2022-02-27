@@ -121,7 +121,7 @@ describe("Rotating T-Shape", () => {
     board.rotateFallingRight();
     board.rotateFallingRight();
     fallToBottom(board);
-    
+
     board.drop(shape);
     board.rotateFallingLeft();
     board.move("left");

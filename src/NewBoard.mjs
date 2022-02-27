@@ -43,15 +43,15 @@ export class NewBoard {
           block.orientation,
           block.limits
         );
-        var blockStart = Math.ceil(this.placement - size / 2)+1;
-        for (var i = 0; i < size-1; i++) {
+        var blockStart = Math.ceil(this.placement - size / 2) + 1;
+        for (var i = 0; i < size - 1; i++) {
           for (var j = 0; j < size; j++) {
-            this.board[i][blockStart] = block.shapeMatrix[i+1][j];
+            this.board[i][blockStart] = block.shapeMatrix[i + 1][j];
             blockStart += 1;
           }
-          blockStart = Math.ceil(this.placement - size / 2) +1;
+          blockStart = Math.ceil(this.placement - size / 2) + 1;
         }
-        const cornerX = Math.ceil(this.placement - size / 2)+1;
+        const cornerX = Math.ceil(this.placement - size / 2) + 1;
         const cornerY = -1;
         const limits = block.limits;
         const newLimits = {
@@ -78,7 +78,7 @@ export class NewBoard {
       case "X":
         return 1;
       case "Y":
-          return 1;  
+        return 1;
       default:
         return 4;
     }
@@ -189,7 +189,7 @@ export class NewBoard {
     } else {
       var hasRoom = true;
       for (var i = left; i < right + 1; i++) {
-        if (this.board[down][i] !== '.')  {
+        if (this.board[down][i] !== ".") {
           if (!this.isThereSpaceBelow(down, i)) {
             hasRoom = false;
             this.fallingBlock = null;
@@ -203,7 +203,7 @@ export class NewBoard {
         this.updateFallingBlockLimits(this.fallingBlock);
       }
     }
-  }  
+  }
 
   moveBlockDown(block) {
     if (block !== null) {
@@ -214,7 +214,8 @@ export class NewBoard {
 
       for (var i = down; i > up - 1; i--) {
         for (var j = left; j < right + 1; j++) {
-          if (!this.oldies.includes(this.board[i + 1][j])) { // do not overwrite old blocks
+          if (!this.oldies.includes(this.board[i + 1][j])) {
+            // do not overwrite old blocks
             this.board[i + 1][j] = this.board[i][j];
           }
         }
@@ -437,10 +438,15 @@ export class NewBoard {
       for (var i = 0; i < size; i++) {
         for (var j = 0; j < size; j++) {
           if (i + startY < this.height && j + startX < this.width) {
-            if (!this.oldies.includes(this.board[i + startY + adjustment1][j + startX])) {
+            if (
+              !this.oldies.includes(
+                this.board[i + startY + adjustment1][j + startX]
+              )
+            ) {
               // if this coordinate is not occupied by an existing shape
               // it can be updated with the the new shape
-              this.board[i + startY + adjustment1][j + startX] = block.shapeMatrix[i][j];
+              this.board[i + startY + adjustment1][j + startX] =
+                block.shapeMatrix[i][j];
             }
           }
         }
@@ -457,17 +463,18 @@ export class NewBoard {
       right < this.width &&
       down < this.height &&
       left > -1;
-    
-      const kicksRightWall =
+
+    const kicksRightWall =
       fitsWithOldShapes &&
       up > -1 &&
       down < this.height - 1 &&
       right > this.width - 1;
-    
-      const kicksLeftWall =
+
+    const kicksLeftWall =
       fitsWithOldShapes && up > -1 && down < this.height - 1 && left < 0;
 
-      const tooFarUp = fitsWithOldShapes && left > -1 && right < this.width && up < 0;
+    const tooFarUp =
+      fitsWithOldShapes && left > -1 && right < this.width && up < 0;
 
     if (fitsWell) {
       return "all good";

@@ -87,7 +87,10 @@ export class HardCodedRotatingShape {
   }
 
   rotateT(direction) {
-    const orientation = direction === 'right' ? this.getNextOrientationRight() : this.getNextOrientationLeft();
+    const orientation =
+      direction === "right"
+        ? this.getNextOrientationRight()
+        : this.getNextOrientationLeft();
     const defaultT = new HardCodedRotatingShape(
       "....\nTTT.\n.T..\n....\n",
       "T",
@@ -164,7 +167,7 @@ export class HardCodedRotatingShape {
     } else if (typeof this.color !== "undefined" && this.color === "I") {
       return this.rotateLeftI();
     } else if (typeof this.color !== "undefined" && this.color === "T") {
-      return this.rotateT("left");      
+      return this.rotateT("left");
     } else {
       var transposeMatrix = _.zip(...this.shapeMatrix);
       var rotatedLeft = transposeMatrix.reverse();
