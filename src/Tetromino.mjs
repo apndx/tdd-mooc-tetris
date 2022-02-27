@@ -28,13 +28,20 @@ export class Tetromino {
     `....\nLLL.\nL...\n....\n`,
     "L",
     "down",
-    { up: 0, right: 2, down: 1, left: 1 }
+    { up: 0, right: 2, down: 1, left: -1 }
   );
 
   static J_SHAPE_NEW = new HardCodedRotatingShape(
     `....\nJJJ.\n..J.\n....\n`,
     "J",
     "down",
-    { up: 0, right: 2, down: 1, left: 1 }
+    { up: 0, right: 2, down: 1, left: -1 }
+  );
+
+  static S_SHAPE_NEW = new HardCodedRotatingShape(
+    `....\n.SS.\nSS..\n....\n`,
+    "S",
+    "left",
+    { up: 0, right: 1, down: 1, left: -1 }
   );
 }

@@ -119,8 +119,25 @@ export class HardCodedRotatingShape {
         return this.getTStrings(orientation);
       case "J":
         return this.getJStrings(orientation);
+      case "S":
+          return this.getSStrings(orientation);
       default:
         return this.getTStrings(orientation);
+    }
+  }
+
+  getSStrings(orientation) {
+    switch (orientation) {
+      case "up":
+        return  `S...\nSS..\n.S..\n....\n`;
+      case "left":
+        return  `....\n.SS.\nSS..\n....\n`;
+      case "down":
+          return  `S...\nSS..\n.S..\n....\n`;
+      case "right":
+            return  `....\n.SS.\nSS..\n....\n`;    
+      default:
+        return `....\n.SS.\nSS..\n....\n`;
     }
   }
 

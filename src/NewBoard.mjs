@@ -1,5 +1,5 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
-import { Tetromino } from "./Tetromino.mjs";
+
 export class NewBoard {
   width;
   height;
@@ -110,6 +110,22 @@ export class NewBoard {
         return { ...limits, up: limits.up + 1, right: limits.right - 1 };
       case "left":
         return { ...limits, up: limits.up - 1, right: limits.right - 1 };
+      default:
+        return limits;
+    }
+  }
+
+  getSRotationLimits(limits, newBlock) {
+    const newOrientation = newBlock.orientation;
+    switch (newOrientation) {
+      case "up":
+        return { ...limits, up: limits.up - 1, right: limits.right - 1 };
+      case "left":
+        return { ...limits, up: limits.up + 1, right: limits.right - 1 };
+      case "down":
+        return { ...limits, up: limits.up - 1, right: limits.right - 1 };
+      case "right":
+        return { ...limits, up: limits.up + 1, right: limits.right - 1 };  
       default:
         return limits;
     }
@@ -436,6 +452,8 @@ export class NewBoard {
           : this.getJLTRightRotationLimits(oldLimits, newBlock);   
       case "I":
         return this.getIRotationLimits(oldLimits, newBlock);
+      case "S":
+          return this.getSRotationLimits(oldLimits, newBlock);  
       default:
         return oldLimits;
     }
