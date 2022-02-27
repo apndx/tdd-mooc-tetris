@@ -82,7 +82,10 @@ export class HardCodedRotatingShape {
       return this.rotateRightI();
     } else if (typeof this.color !== "undefined" && this.color === "T") {
       return this.rotateT("right");
+    } else if (typeof this.color !== "undefined" && this.color === "L") {
+      return this.rotateL("right");
     } else {
+      return this;
     }
   }
 
@@ -134,6 +137,54 @@ export class HardCodedRotatingShape {
     }
   }
 
+  rotateL(direction) {
+    const orientation =
+      direction === "right"
+        ? this.getNextOrientationRight()
+        : this.getNextOrientationLeft();
+    const defaultL = new HardCodedRotatingShape(
+      `....\nLLL.\nL...\n....\n`,
+      "L",
+      "down",
+      this.limits,
+      this.cornerX,
+      this.cornerY
+    );
+    switch (orientation) {
+      case "up":
+        return new HardCodedRotatingShape(
+          "....\n..L.\nLLL.\n....\n",
+          "L",
+          "up",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "left":
+        return new HardCodedRotatingShape(
+          "LL..\n.L..\n.L..\n....\n",
+          "L",
+          "left",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "right":
+        return new HardCodedRotatingShape(
+          ".L..\n.L..\n.LL.\n....\n",
+          "L",
+          "right",
+          this.limits,
+          this.cornerX,
+          this.cornerY
+        );
+      case "down":
+        return defaultL;
+      default:
+        return defaultL;
+    }
+  }
+
   rotateRightI() {
     var transposeMatrix = _.zip(...this.shapeMatrix);
     if (this.orientation === "up") {
@@ -168,18 +219,10 @@ export class HardCodedRotatingShape {
       return this.rotateLeftI();
     } else if (typeof this.color !== "undefined" && this.color === "T") {
       return this.rotateT("left");
+    } else if (typeof this.color !== "undefined" && this.color === "L") {
+      return this.rotateL("left");
     } else {
-      var transposeMatrix = _.zip(...this.shapeMatrix);
-      var rotatedLeft = transposeMatrix.reverse();
-      var rotatedString = this.printRotated(rotatedLeft);
-      return new HardCodedRotatingShape(
-        rotatedString,
-        this.color,
-        this.getNextOrientationLeft(),
-        this.limits,
-        this.cornerX,
-        this.cornerY
-      );
+      return this;
     }
   }
 

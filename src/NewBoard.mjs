@@ -84,7 +84,7 @@ export class NewBoard {
     }
   }
 
-  getTRightRotationLimits(limits, newBlock) {
+  getLTRightRotationLimits(limits, newBlock) {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
@@ -100,7 +100,7 @@ export class NewBoard {
     }
   }
 
-  getTLeftRotationLimits(limits, newBlock) {
+  getLTLeftRotationLimits(limits, newBlock) {
     const newOrientation = newBlock.orientation;
     switch (newOrientation) {
       case "up":
@@ -356,14 +356,9 @@ export class NewBoard {
 
   rotateFallingRight() {
     if (this.fallingBlock !== null && this.fallingBlock.color !== "O") {
-      const block = this.fallingBlock;
-
       const oldLimits = this.fallingBlock.limits;
       const newBlock = this.fallingBlock.rotateRight();
-      const newLimits =
-        this.fallingBlock.color === "T"
-          ? this.getTRightRotationLimits(oldLimits, newBlock)
-          : this.getIRotationLimits(oldLimits, newBlock);
+      const newLimits = this.chooseLimits(oldLimits, newBlock, "right");
       const up = newLimits.up;
       const right = newLimits.right;
       const down = newLimits.down;
@@ -396,10 +391,7 @@ export class NewBoard {
     if (this.fallingBlock !== null && this.fallingBlock.color !== "O") {
       const oldLimits = this.fallingBlock.limits;
       const newBlock = this.fallingBlock.rotateLeft();
-      const newLimits =
-        this.fallingBlock.color === "T"
-          ? this.getTLeftRotationLimits(oldLimits, newBlock)
-          : this.getIRotationLimits(oldLimits, newBlock);
+      const newLimits = this.chooseLimits(oldLimits, newBlock, "left");
       const up = newLimits.up;
       const right = newLimits.right;
       const down = newLimits.down;
@@ -425,6 +417,24 @@ export class NewBoard {
         this.tick();
         this.rotateFallingLeft();
       }
+    }
+  }
+
+  chooseLimits(oldLimits, newBlock, direction) {
+    const color = newBlock.color;
+    switch (color) {
+      case "T":
+        return direction === "left"
+          ? this.getLTLeftRotationLimits(oldLimits, newBlock)
+          : this.getLTRightRotationLimits(oldLimits, newBlock);
+      case "L":
+        return direction === "left"
+          ? this.getLTLeftRotationLimits(oldLimits, newBlock)
+          : this.getLTRightRotationLimits(oldLimits, newBlock);
+      case "I":
+        return this.getIRotationLimits(oldLimits, newBlock);
+      default:
+        return oldLimits;
     }
   }
 

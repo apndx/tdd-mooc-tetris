@@ -23,4 +23,11 @@ export class Tetromino {
     "up",
     { up: 0, right: 1, down: 1, left: 0 }
   );
+
+  static L_SHAPE_NEW = new HardCodedRotatingShape(
+    `....\nLLL.\nL...\n....\n`,
+    "L",
+    "down",
+    { up: 0, right: 2, down: 1, left: 1 }
+  );
 }
