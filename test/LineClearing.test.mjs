@@ -10,10 +10,10 @@ describe("If one row becomes full", () => {
     board = new NewBoard(10, 6);
   });
 
-  it("the one full row is cleared", () => {
-    const shapeI = Tetromino.I_SHAPE_NEW;
-    const shapeO = Tetromino.O_SHAPE_NEW;
+  const shapeI = Tetromino.I_SHAPE_NEW;
+  const shapeO = Tetromino.O_SHAPE_NEW;
 
+  it("the one full row is cleared", () => {
     board.drop(shapeI);
     tryToMoveOverTheEdge(board, "left");
     fallToBottom(board);
@@ -36,17 +36,51 @@ describe("If one row becomes full", () => {
     );
   });
 
-  xit("all the rows above are moved down one step", () => {
-    const shape = Tetromino.T_SHAPE_NEW;
-    board.drop(shape);
-    board.rotateFallingLeft();
+  it("the order of blocks does not affect row clearing", () => {
+    board.drop(shapeI);
+    tryToMoveOverTheEdge(board, "left");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    fallToBottom(board);
+
+    board.drop(shapeI);
+    tryToMoveOverTheEdge(board, "right");
+    fallToBottom(board);
+
     expect(board.toString()).to.equalShape(
-      `....T.....
-       ....TT....
-       ....T.....
+      `..........
        ..........
        ..........
-       ..........`
+       ..........
+       ..........
+       ....oo....`
     );
   });
+
+  it("all rows are moved down after clearing", () => {
+    board.drop(shapeI);
+    tryToMoveOverTheEdge(board, "left");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    fallToBottom(board);
+
+    board.drop(shapeI);
+    tryToMoveOverTheEdge(board, "right");
+    fallToBottom(board);
+
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ....oo....
+       ....oo....
+       ....oo....`
+    );
+  });
+
 });

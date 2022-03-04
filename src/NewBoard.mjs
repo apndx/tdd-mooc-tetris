@@ -1,5 +1,6 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
 
+
 export class NewBoard {
   width;
   height;
@@ -36,20 +37,6 @@ export class NewBoard {
         this.fallingBlock = block;
         this.board[0][this.placement] = block.color;
       } else {
-        this.fallingBlock = new HardCodedRotatingShape(
-          block.shape,
-          block.color,
-          block.orientation,
-          block.limits
-        );
-        var blockStart = Math.ceil(this.placement - size / 2) + 1;
-        for (var i = 0; i < size - 1; i++) {
-          for (var j = 0; j < size; j++) {
-            this.board[i][blockStart] = block.shapeMatrix[i + 1][j];
-            blockStart += 1;
-          }
-          blockStart = Math.ceil(this.placement - size / 2) + 1;
-        }
         const cornerX = Math.ceil(this.placement - size / 2) + 1;
         const cornerY = -1;
         const limits = block.limits;
@@ -65,7 +52,22 @@ export class NewBoard {
           newLimits,
           cornerX,
           cornerY
-        );
+        ); 
+        var hasRoom = this.doesNewShapeFitWithOldOnes(this.fallingBlock); 
+        if (hasRoom) {
+          var blockStart = Math.ceil(this.placement - size / 2) + 1;
+          for (var i = 0; i < size - 1; i++) {
+            for (var j = 0; j < size; j++) {
+              if (!this.oldies.includes(this.board[i][blockStart])) {
+                this.board[i][blockStart] = block.shapeMatrix[i + 1][j];
+              }
+              blockStart += 1;
+            }
+            blockStart = Math.ceil(this.placement - size / 2) + 1;
+          }
+        } else if (!hasRoom) {
+          throw "game over"
+        }
       }
     } else {
       throw "already falling";
@@ -212,38 +214,33 @@ export class NewBoard {
   }
 
   clearingCheck(down, up) {
-    console.log('clearing check du', down, up)
     var toCheck = down;
-    for (var i = toCheck; i > up; i--) {
-      for (var j = 0; j < this.width; j++) {
-        console.log('iijii', i, j, this.board[i][j] )
-        if (this.board[i][j] === '.') {
-          toCheck += 1;
-          break;
-        } else {
-          this.clearRow(toCheck);
-          this.moveBoardAfterClear(toCheck);
-        }
+    for (var i = toCheck; i >= up; i--) {
+      if (!this.board[i].includes('.')) {
+        this.clearRow(toCheck);
+        this.moveBoardAfterClear(toCheck);
+      } else if (toCheck > up) {
+        toCheck -= 1;
       }
     } 
   }
 
   moveBoardAfterClear(startRow) {
     for (var i = startRow; i > 0; i--) {
-      this.board[i] = this.board[i-1]
+      for (var j = 0; j < this.width; j++) {
+        this.board[i][j] = this.board[i-1][j];
+      }
     } 
     // clear the top row
     for (var j = 0; j < this.width; j++) {
       this.board[0][j] = '.';
     } 
-    console.log('moved', this.toString())
   }
 
   clearRow(toCheck) {
     for (var j = 0; j < this.width; j++) {
       this.board[toCheck][j] = '.';
     }
-    console.log('row cleared', this.toString())
   }
 
   moveBlockDownIfItShould() {
