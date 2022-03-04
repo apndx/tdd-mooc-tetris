@@ -6,7 +6,7 @@ export class NewBoard {
   board;
   fallingBlock;
   placement;
-  oldies = ["t", "i", "o", "x", "l", "y"];
+  oldies = ["t", "i", "o", "x", "l", "j", "y", "s", "z"];
 
   constructor(width, height) {
     this.width = width;
@@ -204,27 +204,66 @@ export class NewBoard {
         this.board[rowIndex][columnIndex] = ".";
         this.board[rowIndex + 1][columnIndex] = this.fallingBlock.color;
       } else {
-        this.fallingBlock = null;
         this.changeColorForStoppedBlocks();
+        this.clearingCheck(rowIndex, rowIndex);
+        this.fallingBlock = null;
       }
     }
+  }
+
+  clearingCheck(down, up) {
+    console.log('clearing check du', down, up)
+    var toCheck = down;
+    for (var i = toCheck; i > up; i--) {
+      for (var j = 0; j < this.width; j++) {
+        console.log('iijii', i, j, this.board[i][j] )
+        if (this.board[i][j] === '.') {
+          toCheck += 1;
+          break;
+        } else {
+          this.clearRow(toCheck);
+          this.moveBoardAfterClear(toCheck);
+        }
+      }
+    } 
+  }
+
+  moveBoardAfterClear(startRow) {
+    for (var i = startRow; i > 0; i--) {
+      this.board[i] = this.board[i-1]
+    } 
+    // clear the top row
+    for (var j = 0; j < this.width; j++) {
+      this.board[0][j] = '.';
+    } 
+    console.log('moved', this.toString())
+  }
+
+  clearRow(toCheck) {
+    for (var j = 0; j < this.width; j++) {
+      this.board[toCheck][j] = '.';
+    }
+    console.log('row cleared', this.toString())
   }
 
   moveBlockDownIfItShould() {
     var right = this.fallingBlock.limits.right;
     var down = this.fallingBlock.limits.down;
     var left = this.fallingBlock.limits.left;
-    if (down >= this.height - 1) {
-      this.fallingBlock = null;
+    var up = this.fallingBlock.limits.up;
+    if (down >= this.height - 1) {  
       this.changeColorForStoppedBlocks();
+      this.clearingCheck(down, up);
+      this.fallingBlock = null;
     } else {
       var hasRoom = true;
       for (var i = left; i < right + 1; i++) {
         if (this.board[down][i] !== ".") {
           if (!this.isThereSpaceBelow(down, i)) {
             hasRoom = false;
-            this.fallingBlock = null;
             this.changeColorForStoppedBlocks();
+            this.clearingCheck(down, up);
+            this.fallingBlock = null;
             break;
           }
         }
