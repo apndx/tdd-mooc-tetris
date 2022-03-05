@@ -214,18 +214,16 @@ export class NewBoard {
   }
 
   clearingCheck(down, up) {
-    var toCheck = down;
-    for (var i = toCheck; i >= up; i--) {
+    for (var i = down; i >= up; i--) {
       if (!this.board[i].includes('.')) {
-        this.clearRow(toCheck);
-        this.moveBoardAfterClear(toCheck);
-      } else if (toCheck > up) {
-        toCheck -= 1;
-      }
+        this.clearRow(i);
+        this.moveBoardAfterClear(i, up+1);
+        break;
+      } 
     } 
   }
 
-  moveBoardAfterClear(startRow) {
+  moveBoardAfterClear(startRow, endRow) {
     for (var i = startRow; i > 0; i--) {
       for (var j = 0; j < this.width; j++) {
         this.board[i][j] = this.board[i-1][j];
@@ -234,7 +232,8 @@ export class NewBoard {
     // clear the top row
     for (var j = 0; j < this.width; j++) {
       this.board[0][j] = '.';
-    } 
+    }
+    this.clearingCheck(startRow, endRow);
   }
 
   clearRow(toCheck) {

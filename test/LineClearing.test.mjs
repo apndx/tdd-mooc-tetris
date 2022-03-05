@@ -84,3 +84,47 @@ describe("If one row becomes full", () => {
   });
 
 });
+
+
+describe("If two rows become full", () => {
+  let board;
+  beforeEach(() => {
+    board = new NewBoard(10, 6);
+  });
+
+  const shapeO = Tetromino.O_SHAPE_NEW;
+  
+  it("both two rows are cleared", () => {
+    board.drop(shapeO);
+    tryToMoveOverTheEdge(board, "left");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    tryToMoveOverTheEdge(board, "right");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    board.move("left");
+    board.move("left");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    board.move("right");
+    board.move("right");
+    fallToBottom(board);
+
+    board.drop(shapeO);
+    fallToBottom(board);
+
+    board.rotateFallingRight();
+    expect(board.toString()).to.equalShape(
+      `..........
+       ..........
+       ..........
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+});
