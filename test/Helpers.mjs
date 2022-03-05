@@ -5,7 +5,7 @@ export function fallToBottom(board) {
 }
 
 export function tryToMoveOverTheEdge(board, direction) {
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     board.move(direction);
   }
 }

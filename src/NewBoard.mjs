@@ -1,6 +1,5 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
 
-
 export class NewBoard {
   width;
   height;
@@ -109,7 +108,7 @@ export class NewBoard {
       case "right":
         return { ...limits, left: limits.left + 1, up: limits.up - 1 };
       case "down":
-        return { ...limits, up: limits.up + 1, right: limits.right - 1 };
+        return { ...limits, up: limits.up + 1, right: limits.right + 1 };
       case "left":
         return { ...limits, up: limits.up - 1, right: limits.right - 1 };
       default:
@@ -154,19 +153,17 @@ export class NewBoard {
     switch (newOrientation) {
       case "up":
         return {
-          ...limits,
-          down: limits.down + 1,
-          left: limits.left - 2,
-          up: limits.up + 2,
-          right: limits.right + 1,
+          down: limits.down + 2,
+          left: limits.left + 2,
+          up: limits.up - 1,
+          right: limits.right - 1,
         };
       case "left":
         return {
-          ...limits,
-          down: limits.down - 1,
-          left: limits.left + 2,
-          up: limits.up - 2,
-          right: limits.right - 1,
+          down: limits.down - 2,
+          left: limits.left - 2,
+          up: limits.up + 1,
+          right: limits.right + 1,
         };
       default:
         return limits;
@@ -243,28 +240,31 @@ export class NewBoard {
   }
 
   moveBlockDownIfItShould() {
-    var right = this.fallingBlock.limits.right;
     var down = this.fallingBlock.limits.down;
-    var left = this.fallingBlock.limits.left;
     var up = this.fallingBlock.limits.up;
     if (down >= this.height - 1) {  
       this.changeColorForStoppedBlocks();
       this.clearingCheck(down, up);
       this.fallingBlock = null;
     } else {
-      var hasRoom = true;
-      for (var i = left; i < right + 1; i++) {
-        if (this.board[down][i] !== ".") {
-          if (!this.isThereSpaceBelow(down, i)) {
-            hasRoom = false;
-            this.changeColorForStoppedBlocks();
-            this.clearingCheck(down, up);
-            this.fallingBlock = null;
-            break;
-          }
-        }
-      }
-      if (hasRoom) {
+      const newLimits = {
+        ...this.fallingBlock,
+        up: up + 1,
+        down: down + 1,
+      };
+      const newBlock = new HardCodedRotatingShape(
+        this.fallingBlock.shape,
+        this.fallingBlock.color,
+        this.fallingBlock.orientation,
+        newLimits,
+        this.fallingBlock.cornerX,
+        this.fallingBlock.cornerY+1
+      ); 
+      if (!this.doesNewShapeFitWithOldOnes(newBlock)) {
+        this.changeColorForStoppedBlocks();
+        this.clearingCheck(down, up);
+        this.fallingBlock = null;
+      } else {
         this.moveBlockDown(this.fallingBlock);
         this.updateFallingBlockLimits(this.fallingBlock);
       }
@@ -398,10 +398,7 @@ export class NewBoard {
   moveRight(up, right, down, left) {
     var stillRoom = true;
     for (var i = up; i < down + 1; i++) {
-      if (
-        right > this.width - 2 ||
-        !this.isThereSpaceHorizontal(i, right, "right")
-      ) {
+      if (right > this.width - 2 || !this.isThereSpaceHorizontal(i, right, "right")) {
         stillRoom = false;
         break;
       }
@@ -462,16 +459,17 @@ export class NewBoard {
       const right = newLimits.right;
       const down = newLimits.down;
       const left = newLimits.left;
-      const room = this.isThereRoomToRotate(newBlock, up, right, down, left);
+      const newBlockWithLimits = new HardCodedRotatingShape(
+        newBlock.shape,
+        newBlock.color,
+        newBlock.orientation,
+        newLimits,
+        newBlock.cornerX,
+        newBlock.cornerY
+      );
+      const room = this.isThereRoomToRotate(newBlockWithLimits, up, right, down, left);
       if (room === "all good") {
-        this.fallingBlock = new HardCodedRotatingShape(
-          newBlock.shape,
-          newBlock.color,
-          newBlock.orientation,
-          newLimits,
-          newBlock.cornerX,
-          newBlock.cornerY
-        );
+        this.fallingBlock = newBlockWithLimits;
         this.drawBoardAfterRightRotation();
       } else if (room === "wall kick right") {
         this.move("left");
@@ -540,7 +538,6 @@ export class NewBoard {
 
   isThereRoomToRotate(newBlock, up, right, down, left) {
     const fitsWithOldShapes = this.doesNewShapeFitWithOldOnes(newBlock);
-
     const fitsWell =
       fitsWithOldShapes &&
       up > -1 &&
@@ -580,14 +577,16 @@ export class NewBoard {
     const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
     for (var i = 0; i < size - 1; i++) {
       for (var j = 0; j < size - 1; j++) {
-        const boardPiece = this.board[startY + i + adjustment1][startX + j];
-        const newShapePiece = newShape.shapeMatrix[i + adjustment1][j];
-        if (
-          this.oldies.includes(boardPiece) &&
-          newShapePiece === newShape.color
-        ) {
-          // old shape prevents this rotation
-          return false;
+        if(startY + i + adjustment1 < this.height-1 && startY + i + adjustment1 > -1) {
+          const boardPiece = this.board[startY + i + adjustment1][startX + j];
+          const newShapePiece = newShape.shapeMatrix[i + adjustment1][j];
+          if (
+            this.oldies.includes(boardPiece) &&
+            newShapePiece === newShape.color
+          ) {
+            // old shape prevents this rotation
+            return false;
+          }
         }
       }
     }

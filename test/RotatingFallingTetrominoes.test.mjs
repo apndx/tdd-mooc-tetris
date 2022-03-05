@@ -178,3 +178,28 @@ describe("Falling T-Shape", () => {
     );
   });
 });
+
+describe("Falling L-Shape", () => {
+  let board;
+  beforeEach(() => {
+    board = new NewBoard(10, 6);
+  });
+
+  it("gets a wall kick if rotated too near the right wall", () => {
+    const shape = Tetromino.L_SHAPE_NEW;
+    board.drop(shape);
+    board.rotateFallingRight();
+    tryToMoveOverTheEdge(board, "right");
+    board.rotateFallingLeft();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+       .......LLL
+       .......L..
+       ..........
+       ..........
+       ..........`
+    );
+  });
+
+});
