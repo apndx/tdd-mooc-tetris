@@ -1,4 +1,5 @@
 import { HardCodedRotatingShape } from "./HardCodedRotatingShape.mjs";
+import { Scoring } from "./Scoring.mjs";
 
 export class NewBoard {
   width;
@@ -7,6 +8,9 @@ export class NewBoard {
   fallingBlock;
   placement;
   oldies = ["t", "i", "o", "x", "l", "j", "y", "s", "z"];
+  scoring;
+  clearedRows;
+  level;
 
   constructor(width, height) {
     this.width = width;
@@ -14,6 +18,9 @@ export class NewBoard {
     this.board = this.makeBoardArray(this.width, this.height);
     this.fallingBlock = null;
     this.placement = Math.ceil(this.width / 2) - 1;
+    this.scoring = new Scoring();
+    this.clearedRows = 0;
+    this.level = 0;
   }
 
   toString() {
@@ -211,13 +218,13 @@ export class NewBoard {
   }
 
   clearingCheck(down, up) {
-    for (var i = down; i >= up; i--) {
+    for (var i = down; i >= up-1; i--) {
       if (!this.board[i].includes('.')) {
         this.clearRow(i);
         this.moveBoardAfterClear(i, up+1);
         break;
       } 
-    } 
+    }
   }
 
   moveBoardAfterClear(startRow, endRow) {
@@ -234,6 +241,7 @@ export class NewBoard {
   }
 
   clearRow(toCheck) {
+    this.clearedRows +=1;
     for (var j = 0; j < this.width; j++) {
       this.board[toCheck][j] = '.';
     }
@@ -245,6 +253,8 @@ export class NewBoard {
     if (down >= this.height - 1) {  
       this.changeColorForStoppedBlocks();
       this.clearingCheck(down, up);
+      this.scoring.update(this.level, this.clearedRows);
+      this.clereadRows = 0;
       this.fallingBlock = null;
     } else {
       const newLimits = {
@@ -263,6 +273,8 @@ export class NewBoard {
       if (!this.doesNewShapeFitWithOldOnes(newBlock)) {
         this.changeColorForStoppedBlocks();
         this.clearingCheck(down, up);
+        this.scoring.update(this.level, this.clearedRows);
+        this.clereadRows = 0;
         this.fallingBlock = null;
       } else {
         this.moveBlockDown(this.fallingBlock);

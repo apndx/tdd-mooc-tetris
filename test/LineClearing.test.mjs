@@ -13,7 +13,7 @@ describe("If one row becomes full", () => {
   const shapeI = Tetromino.I_SHAPE_NEW;
   const shapeO = Tetromino.O_SHAPE_NEW;
 
-  it("the one full row is cleared", () => {
+  it("the one full row is cleared and scores are updated correctly", () => {
     board.drop(shapeI);
     tryToMoveOverTheEdge(board, "left");
     fallToBottom(board);
@@ -34,6 +34,8 @@ describe("If one row becomes full", () => {
        ..........
        ....oo....`
     );
+    expect(board.scoring.scores).to.equal(40);
+
   });
 
   it("the order of blocks does not affect row clearing", () => {
@@ -94,7 +96,7 @@ describe("If two rows become full", () => {
 
   const shapeO = Tetromino.O_SHAPE_NEW;
 
-  it("both two rows are cleared", () => {
+  it("both two rows are cleared and scores are updated correctly", () => {
     board.drop(shapeO);
     tryToMoveOverTheEdge(board, "left");
     fallToBottom(board);
@@ -125,6 +127,7 @@ describe("If two rows become full", () => {
        ..........
        ..........`
     );
+    expect(board.scoring.scores).to.equal(100);
   });
 
 });
@@ -192,6 +195,7 @@ describe("If three rows become full", () => {
        ..........
        .....t...i`
     );
+    expect(board.scoring.scores).to.equal(300);
   });
 });
 
@@ -235,5 +239,6 @@ describe("If four rows become full", () => {
        ....
        ....`
     );
+    expect(board.scoring.scores).to.equal(1200);
   });
 });
