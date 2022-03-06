@@ -1,5 +1,4 @@
 export class Scoring {
-  
   scores;
 
   constructor() {
@@ -13,16 +12,15 @@ export class Scoring {
   scoreCalculator(level, clearedRows) {
     switch (clearedRows) {
       case 1:
-        return 40*(level+1);
+        return 40 * (level + 1);
       case 2:
-        return 100*(level+1);
+        return 100 * (level + 1);
       case 3:
-        return 300*(level+1);
+        return 300 * (level + 1);
       case 4:
-        return 1200*(level+1);
+        return 1200 * (level + 1);
       default:
         return 0;
     }
   }
-
 }

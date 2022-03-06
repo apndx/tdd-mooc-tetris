@@ -58,8 +58,8 @@ export class NewBoard {
           newLimits,
           cornerX,
           cornerY
-        ); 
-        var hasRoom = this.doesNewShapeFitWithOldOnes(this.fallingBlock); 
+        );
+        var hasRoom = this.doesNewShapeFitWithOldOnes(this.fallingBlock);
         if (hasRoom) {
           var blockStart = Math.ceil(this.placement - size / 2) + 1;
           for (var i = 0; i < size - 1; i++) {
@@ -72,7 +72,7 @@ export class NewBoard {
             blockStart = Math.ceil(this.placement - size / 2) + 1;
           }
         } else if (!hasRoom) {
-          throw "game over"
+          throw "game over";
         }
       }
     } else {
@@ -218,39 +218,39 @@ export class NewBoard {
   }
 
   clearingCheck(down, up) {
-    for (var i = down; i >= up-1; i--) {
-      if (!this.board[i].includes('.')) {
+    for (var i = down; i >= up - 1; i--) {
+      if (!this.board[i].includes(".")) {
         this.clearRow(i);
-        this.moveBoardAfterClear(i, up+1);
+        this.moveBoardAfterClear(i, up + 1);
         break;
-      } 
+      }
     }
   }
 
   moveBoardAfterClear(startRow, endRow) {
     for (var i = startRow; i > 0; i--) {
       for (var j = 0; j < this.width; j++) {
-        this.board[i][j] = this.board[i-1][j];
+        this.board[i][j] = this.board[i - 1][j];
       }
-    } 
+    }
     // clear the top row
     for (var j = 0; j < this.width; j++) {
-      this.board[0][j] = '.';
+      this.board[0][j] = ".";
     }
     this.clearingCheck(startRow, endRow);
   }
 
   clearRow(toCheck) {
-    this.clearedRows +=1;
+    this.clearedRows += 1;
     for (var j = 0; j < this.width; j++) {
-      this.board[toCheck][j] = '.';
+      this.board[toCheck][j] = ".";
     }
   }
 
   moveBlockDownIfItShould() {
     var down = this.fallingBlock.limits.down;
     var up = this.fallingBlock.limits.up;
-    if (down >= this.height - 1) {  
+    if (down >= this.height - 1) {
       this.changeColorForStoppedBlocks();
       this.clearingCheck(down, up);
       this.scoring.update(this.level, this.clearedRows);
@@ -268,8 +268,8 @@ export class NewBoard {
         this.fallingBlock.orientation,
         newLimits,
         this.fallingBlock.cornerX,
-        this.fallingBlock.cornerY+1
-      ); 
+        this.fallingBlock.cornerY + 1
+      );
       if (!this.doesNewShapeFitWithOldOnes(newBlock)) {
         this.changeColorForStoppedBlocks();
         this.clearingCheck(down, up);
@@ -410,7 +410,10 @@ export class NewBoard {
   moveRight(up, right, down, left) {
     var stillRoom = true;
     for (var i = up; i < down + 1; i++) {
-      if (right > this.width - 2 || !this.isThereSpaceHorizontal(i, right, "right")) {
+      if (
+        right > this.width - 2 ||
+        !this.isThereSpaceHorizontal(i, right, "right")
+      ) {
         stillRoom = false;
         break;
       }
@@ -479,7 +482,13 @@ export class NewBoard {
         newBlock.cornerX,
         newBlock.cornerY
       );
-      const room = this.isThereRoomToRotate(newBlockWithLimits, up, right, down, left);
+      const room = this.isThereRoomToRotate(
+        newBlockWithLimits,
+        up,
+        right,
+        down,
+        left
+      );
       if (room === "all good") {
         this.fallingBlock = newBlockWithLimits;
         this.drawBoardAfterRightRotation();
@@ -516,7 +525,7 @@ export class NewBoard {
       case "S":
         return this.getSRotationLimits(oldLimits, newBlock);
       case "Z":
-        return this.getZRotationLimits(oldLimits, newBlock);  
+        return this.getZRotationLimits(oldLimits, newBlock);
       default:
         return oldLimits;
     }
@@ -589,7 +598,10 @@ export class NewBoard {
     const adjustment1 = startY === -1 ? 1 : 0; //after drop upper row of the block is outside the board
     for (var i = 0; i < size - 1; i++) {
       for (var j = 0; j < size - 1; j++) {
-        if(startY + i + adjustment1 < this.height-1 && startY + i + adjustment1 > -1) {
+        if (
+          startY + i + adjustment1 < this.height - 1 &&
+          startY + i + adjustment1 > -1
+        ) {
           const boardPiece = this.board[startY + i + adjustment1][startX + j];
           const newShapePiece = newShape.shapeMatrix[i + adjustment1][j];
           if (

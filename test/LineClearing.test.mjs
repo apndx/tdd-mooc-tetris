@@ -35,7 +35,6 @@ describe("If one row becomes full", () => {
        ....oo....`
     );
     expect(board.scoring.scores).to.equal(40);
-
   });
 
   it("the order of blocks does not affect row clearing", () => {
@@ -84,9 +83,7 @@ describe("If one row becomes full", () => {
        ....oo....`
     );
   });
-
 });
-
 
 describe("If two rows become full", () => {
   let board;
@@ -129,7 +126,6 @@ describe("If two rows become full", () => {
     );
     expect(board.scoring.scores).to.equal(100);
   });
-
 });
 
 describe("If three rows become full", () => {
@@ -147,25 +143,24 @@ describe("If three rows become full", () => {
     board.drop(shapeO);
     tryToMoveOverTheEdge(board, "left");
     fallToBottom(board);
-  
-  
+
     board.drop(shapeO);
     board.move("left");
     board.move("left");
     fallToBottom(board);
-  
+
     board.drop(shapeO);
     fallToBottom(board);
-  
+
     board.drop(shapeI);
     tryToMoveOverTheEdge(board, "left");
     fallToBottom(board);
-  
+
     board.drop(shapeO);
     board.move("right");
     board.move("right");
     fallToBottom(board);
-  
+
     board.drop(shapeL);
     board.rotateFallingRight();
     tryToMoveOverTheEdge(board, "right");
